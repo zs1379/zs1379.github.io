@@ -1,0 +1,393 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>沉寂了几个月 | Xy-Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="xiaoy">
+    
+    <meta name="description" content="絮絮叨叨封闭了三个月，花了半个月讨论了需求，花了一个月做出了第一款产品，然后发现方向错误，丢弃，又经过半个月讨论，又花了一个月做出了第二款产品，然后发布android版上线，接下来一个月ios及web版上线。
+几个月下来，荒废了锻炼，胖了10斤；与朋友们的联系少了些许；但是最可怕的是一回来整个人突然">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="Xy-Home" title="Xy-Home"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Xy-Home">Xy-Home</a></h1>
+				<h2 class="blog-motto">依然对blog各种无爱，还是单纯记录吧～</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//baidu.com/s" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="wd" autocomplete="off" maxlength="20" placeholder="Search" />
+                        <input name=tn type=hidden value="bds">
+                        <input name=cl type=hidden value="3">
+                        <input name=ct type=hidden value="2097152">
+						<input type="hidden" name="si" value="www.xiaoy.name">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/06/05/20150605/" title="沉寂了几个月" itemprop="url">沉寂了几个月</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://www.xiaoy.name" title="xiaoy">xiaoy</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2015-06-05T07:04:01.000Z" itemprop="datePublished">2015-06-05</time>
+    Updated:<time datetime="2015-06-05T08:15:21.000Z" itemprop="dateModified">2015-06-05</time>
+    
+  </p>
+</header>
+
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#絮絮叨叨"><span class="toc-number">1.</span> <span class="toc-text">絮絮叨叨</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#架构"><span class="toc-number">1.1.</span> <span class="toc-text">架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#框架"><span class="toc-number">1.2.</span> <span class="toc-text">框架</span></a></li></ol></li></ol>
+		</div>
+		
+		<h2 id="絮絮叨叨"><a href="#絮絮叨叨" class="headerlink" title="絮絮叨叨"></a>絮絮叨叨</h2><p>封闭了三个月，花了半个月讨论了需求，花了一个月做出了第一款产品，然后发现方向错误，丢弃，又经过半个月讨论，又花了一个月做出了第二款产品，然后发布android版上线，接下来一个月ios及web版上线。</p>
+<p>几个月下来，荒废了锻炼，胖了10斤；与朋友们的联系少了些许；但是最可怕的是一回来整个人突然就懈怠了，不想学习不想研究，只想好好出去玩一趟…项目却又处于无法长时间离开的初期，只能撑着静下心来了。</p>
+<h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><p>在老产品排查时，才发现经过几个月发展，当初设计架构时的访问瓶颈已经达到，访问量已经翻番了，幸好大规模重构过一次，已经支持无痛扩展了。</p>
+<p>随着老产品逐步发展，当时架构设计上的一些不足逐步地暴露了出来，比如soa带来的分布式复杂性，导致CAP很难达到该有的SLA；把redis当做mysql使用带来的数据一致性难以保证问题；服务相互依赖带来的人员管理问题等等等。</p>
+<p>架构的复杂性带来的是扩展性，所以还是在接受代价以内的，不过也说明了很多东西还是需要完善的，东西一多就又难以进行排期，不进行排期事情就更多了，凌乱~</p>
+<p>作为架构师，永远都觉得自己的广度还需要扩展，但是我却发现自己突然很喜欢往部分技术的深度钻了，难道某一天会转为某门技术专家，哈哈哈哈。</p>
+<h3 id="框架"><a href="#框架" class="headerlink" title="框架"></a>框架</h3><p>xy框架也已经升级到了2.3.8版本，之前的设想已经都完善了，接下来该做的就是未来新员工入职统一风格及思想的培训了，终于可以比较省心地让新员工快速进行开发了。</p>
+<p>接下来的计划：</p>
+<ol>
+<li>做到高度自动化，自动化服务发现、自动化部署、自动化…………</li>
+<li>完善监控平台，做到一个请求在所有系统中的传递跟踪及生成异常报告</li>
+<li>SOA的速度优化以及SLA的更精细的统计，方便发现瓶颈</li>
+<li>进行APP端长连接优先于HTTP请求的尝试，希望后期能够替换掉现有服务</li>
+</ol>
+<p><strong> 大好周末降临<del>~</del>~ </strong></p>
+<p>Authors: xiaoy <a href="&#109;&#97;&#105;&#x6c;&#x74;&#111;&#58;&#122;&#115;&#x31;&#x33;&#x37;&#57;&#x40;&#x71;&#x71;&#x2e;&#99;&#111;&#x6d;">&#122;&#115;&#x31;&#x33;&#x37;&#57;&#x40;&#x71;&#x71;&#x2e;&#99;&#111;&#x6d;</a></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/日常/">日常</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/日常/">日常</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://www.xiaoy.name/2015/06/05/20150605/" data-title="沉寂了几个月 | Xy-Home" data-tsina="1188724621" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2015/06/10/招聘那点事儿/" title="招聘那点事儿">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  招聘那点事儿</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2015/04/13/移动互联网相关性能-3/"  title="移动互联网相关性能(3)">
+ <strong>NEXT:</strong><br/> 
+ <span>移动互联网相关性能(3)
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#絮絮叨叨"><span class="toc-number">1.</span> <span class="toc-text">絮絮叨叨</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#架构"><span class="toc-number">1.1.</span> <span class="toc-text">架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#框架"><span class="toc-number">1.2.</span> <span class="toc-text">框架</span></a></li></ol></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">Categories</p>
+		<ul>
+		
+			<li><a href="/categories/go/" title="go">go<sup>1</sup></a></li>
+		
+			<li><a href="/categories/java/" title="java">java<sup>2</sup></a></li>
+		
+			<li><a href="/categories/协议/" title="协议">协议<sup>1</sup></a></li>
+		
+			<li><a href="/categories/性能/" title="性能">性能<sup>3</sup></a></li>
+		
+			<li><a href="/categories/日常/" title="日常">日常<sup>4</sup></a></li>
+		
+			<li><a href="/categories/架构/" title="架构">架构<sup>3</sup></a></li>
+		
+			<li><a href="/categories/问题记录/" title="问题记录">问题记录<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/go/" title="go">go<sup>1</sup></a></li>
+		
+			<li><a href="/tags/java/" title="java">java<sup>2</sup></a></li>
+		
+			<li><a href="/tags/协议/" title="协议">协议<sup>1</sup></a></li>
+		
+			<li><a href="/tags/性能/" title="性能">性能<sup>3</sup></a></li>
+		
+			<li><a href="/tags/日常/" title="日常">日常<sup>4</sup></a></li>
+		
+			<li><a href="/tags/架构/" title="架构">架构<sup>3</sup></a></li>
+		
+			<li><a href="/tags/网络/" title="网络">网络<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+  <div class="archiveslist">
+    <p class="asidetitle"><a href="/archives">Archives</a></p>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a><span class="archive-list-count">3</span></li></ul>
+  </div>
+
+
+  
+  <div class="tagcloudlist">
+    <p class="asidetitle">Tag Cloud</p>
+    <div class="tagcloudlist clearfix">
+       <a href="/tags/go/" style="font-size: 10px;">go</a> <a href="/tags/java/" style="font-size: 13.33px;">java</a> <a href="/tags/协议/" style="font-size: 10px;">协议</a> <a href="/tags/性能/" style="font-size: 16.67px;">性能</a> <a href="/tags/日常/" style="font-size: 20px;">日常</a> <a href="/tags/架构/" style="font-size: 16.67px;">架构</a> <a href="/tags/网络/" style="font-size: 10px;">网络</a>
+    </div>
+  </div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<section class="info">
+		<p> 架构师，devops <br/>
+			only for save sth.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		<a href="https://github.com/zs1379" target="_blank" title="github"></a>
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wizicer/iceman" target="_blank" title="Iceman">Iceman</a> © 2016 
+		
+		<a href="http://www.xiaoy.name" target="_blank" title="xiaoy">xiaoy</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"zs1379"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+
+  </body>
+</html>
+

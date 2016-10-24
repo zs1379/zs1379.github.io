@@ -1,0 +1,427 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>【笔记】jvm相关一 | Xy-Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="xiaoy">
+    
+    <meta name="description" content="序发现技术类型的东西，除了一些基础的理论，否则的话一段时间不使用很容易就会忘记掉部分东西，因此~好记性不如做笔记…..还是记下来的好。
+垃圾收集可作为GC-ROOT的对象
+栈中引用的对象
+类静态属性引用的对象【方法区】
+常量引用的对象【方法区】
+JNI引用的对象
+
+四种引用
+强引用【Strong R">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="Xy-Home" title="Xy-Home"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Xy-Home">Xy-Home</a></h1>
+				<h2 class="blog-motto">依然对blog各种无爱，还是单纯记录吧～</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//baidu.com/s" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="wd" autocomplete="off" maxlength="20" placeholder="Search" />
+                        <input name=tn type=hidden value="bds">
+                        <input name=cl type=hidden value="3">
+                        <input name=ct type=hidden value="2097152">
+						<input type="hidden" name="si" value="www.xiaoy.name">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/10/21/jvm/" title="【笔记】jvm相关一" itemprop="url">【笔记】jvm相关一</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://www.xiaoy.name" title="xiaoy">xiaoy</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2015-10-20T16:13:42.000Z" itemprop="datePublished">2015-10-21</time>
+    Updated:<time datetime="2015-10-27T15:18:46.000Z" itemprop="dateModified">2015-10-27</time>
+    
+  </p>
+</header>
+
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#序"><span class="toc-number">1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#垃圾收集"><span class="toc-number">2.</span> <span class="toc-text">垃圾收集</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#可作为GC-ROOT的对象"><span class="toc-number">2.1.</span> <span class="toc-text">可作为GC-ROOT的对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#四种引用"><span class="toc-number">2.2.</span> <span class="toc-text">四种引用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#回收方法区里的类的前提"><span class="toc-number">2.3.</span> <span class="toc-text">回收方法区里的类的前提</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#垃圾回收算法"><span class="toc-number">2.4.</span> <span class="toc-text">垃圾回收算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#垃圾收集器"><span class="toc-number">2.5.</span> <span class="toc-text">垃圾收集器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#内存分配"><span class="toc-number">2.6.</span> <span class="toc-text">内存分配</span></a></li></ol></li></ol>
+		</div>
+		
+		<h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>发现技术类型的东西，除了一些基础的理论，否则的话一段时间不使用很容易就会忘记掉部分东西，因此~好记性不如做笔记…..还是记下来的好。</p>
+<h2 id="垃圾收集"><a href="#垃圾收集" class="headerlink" title="垃圾收集"></a>垃圾收集</h2><h3 id="可作为GC-ROOT的对象"><a href="#可作为GC-ROOT的对象" class="headerlink" title="可作为GC-ROOT的对象"></a>可作为GC-ROOT的对象</h3><ul>
+<li>栈中引用的对象</li>
+<li>类静态属性引用的对象【方法区】</li>
+<li>常量引用的对象【方法区】</li>
+<li>JNI引用的对象</li>
+</ul>
+<h3 id="四种引用"><a href="#四种引用" class="headerlink" title="四种引用"></a>四种引用</h3><ul>
+<li>强引用【Strong Reference】</li>
+<li>软引用 【Soft Reference】</li>
+<li>弱引用 【Weak Reference】</li>
+<li>虚引用 【Phantom Reference】</li>
+</ul>
+<h3 id="回收方法区里的类的前提"><a href="#回收方法区里的类的前提" class="headerlink" title="回收方法区里的类的前提"></a>回收方法区里的类的前提</h3><p>场景：【大量使用反射、动态代理、各种直接修改字节码的框架、动态生成JSP、OSGI】</p>
+<ul>
+<li>类的所有实例都已经被回收</li>
+<li>加载该类的ClassLoader已经被回收</li>
+<li>该类对应的Class对象没有被引用，也就是没法反射得到该类的方法</li>
+</ul>
+<h3 id="垃圾回收算法"><a href="#垃圾回收算法" class="headerlink" title="垃圾回收算法"></a>垃圾回收算法</h3><ul>
+<li>标记 清除  【效率差、产生大量不连续的空间】</li>
+<li>复制 【常用于年轻代，Eden、Survivor】【分配担保】</li>
+<li>标记 整理</li>
+<li>分代收集</li>
+</ul>
+<h3 id="垃圾收集器"><a href="#垃圾收集器" class="headerlink" title="垃圾收集器"></a>垃圾收集器</h3><ul>
+<li>Serial 【单线程、stop the world、简单高效、Client首选、年轻代】</li>
+<li>ParNew 【多线程的Serial、能与CMS搭配】</li>
+<li>Paraller Scavenge 【可控吞吐量】</li>
+<li>Serial Old 【CMS后台方案、老年代】</li>
+<li>Parallel Old 【多线程、标记整理、注重吞吐量及CPU资源敏感可考虑使用】</li>
+<li>CMS 【最短回收停顿时间、标记清除、对CPU资源敏感、浮动垃圾(初始标记-并发标记-重新标记-并发清除)、产生不连续空间】</li>
+<li>G1 【精确控制停顿时间、标记整理、基本不牺牲吞吐量、低停顿、划分多个区域进行优先回收】</li>
+</ul>
+<h3 id="内存分配"><a href="#内存分配" class="headerlink" title="内存分配"></a>内存分配</h3><ul>
+<li>优先分配在年轻代，不够则进行Minor GC</li>
+<li>大对象直接进入老年代</li>
+<li>长期存活的对象进入老年代</li>
+<li>如果在Survivor空间相同年龄的对象大小总和大于空间的一半，则年龄大于等于该年龄的对象直接进入老年代</li>
+<li>空间分配担保 【平均值判定是否进行Full GC】</li>
+</ul>
+<hr>
+<p>Authors: xiaoy <a href="&#x6d;&#x61;&#105;&#108;&#116;&#111;&#x3a;&#122;&#115;&#x31;&#51;&#x37;&#x39;&#64;&#x71;&#x71;&#x2e;&#99;&#x6f;&#109;">&#122;&#115;&#x31;&#51;&#x37;&#x39;&#64;&#x71;&#x71;&#x2e;&#99;&#x6f;&#109;</a></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/java/">java</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/java/">java</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://www.xiaoy.name/2015/10/21/jvm/" data-title="【笔记】jvm相关一 | Xy-Home" data-tsina="1188724621" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2015/10/27/jvm1/" title="【笔记】jvm相关二">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  【笔记】jvm相关二</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2015/10/20/20151020/"  title="两个月的流逝">
+ <strong>NEXT:</strong><br/> 
+ <span>两个月的流逝
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#序"><span class="toc-number">1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#垃圾收集"><span class="toc-number">2.</span> <span class="toc-text">垃圾收集</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#可作为GC-ROOT的对象"><span class="toc-number">2.1.</span> <span class="toc-text">可作为GC-ROOT的对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#四种引用"><span class="toc-number">2.2.</span> <span class="toc-text">四种引用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#回收方法区里的类的前提"><span class="toc-number">2.3.</span> <span class="toc-text">回收方法区里的类的前提</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#垃圾回收算法"><span class="toc-number">2.4.</span> <span class="toc-text">垃圾回收算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#垃圾收集器"><span class="toc-number">2.5.</span> <span class="toc-text">垃圾收集器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#内存分配"><span class="toc-number">2.6.</span> <span class="toc-text">内存分配</span></a></li></ol></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">Categories</p>
+		<ul>
+		
+			<li><a href="/categories/go/" title="go">go<sup>1</sup></a></li>
+		
+			<li><a href="/categories/java/" title="java">java<sup>2</sup></a></li>
+		
+			<li><a href="/categories/协议/" title="协议">协议<sup>1</sup></a></li>
+		
+			<li><a href="/categories/性能/" title="性能">性能<sup>3</sup></a></li>
+		
+			<li><a href="/categories/日常/" title="日常">日常<sup>4</sup></a></li>
+		
+			<li><a href="/categories/架构/" title="架构">架构<sup>3</sup></a></li>
+		
+			<li><a href="/categories/问题记录/" title="问题记录">问题记录<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/go/" title="go">go<sup>1</sup></a></li>
+		
+			<li><a href="/tags/java/" title="java">java<sup>2</sup></a></li>
+		
+			<li><a href="/tags/协议/" title="协议">协议<sup>1</sup></a></li>
+		
+			<li><a href="/tags/性能/" title="性能">性能<sup>3</sup></a></li>
+		
+			<li><a href="/tags/日常/" title="日常">日常<sup>4</sup></a></li>
+		
+			<li><a href="/tags/架构/" title="架构">架构<sup>3</sup></a></li>
+		
+			<li><a href="/tags/网络/" title="网络">网络<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+  <div class="archiveslist">
+    <p class="asidetitle"><a href="/archives">Archives</a></p>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a><span class="archive-list-count">3</span></li></ul>
+  </div>
+
+
+  
+  <div class="tagcloudlist">
+    <p class="asidetitle">Tag Cloud</p>
+    <div class="tagcloudlist clearfix">
+       <a href="/tags/go/" style="font-size: 10px;">go</a> <a href="/tags/java/" style="font-size: 13.33px;">java</a> <a href="/tags/协议/" style="font-size: 10px;">协议</a> <a href="/tags/性能/" style="font-size: 16.67px;">性能</a> <a href="/tags/日常/" style="font-size: 20px;">日常</a> <a href="/tags/架构/" style="font-size: 16.67px;">架构</a> <a href="/tags/网络/" style="font-size: 10px;">网络</a>
+    </div>
+  </div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<section class="info">
+		<p> 架构师，devops <br/>
+			only for save sth.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		<a href="https://github.com/zs1379" target="_blank" title="github"></a>
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wizicer/iceman" target="_blank" title="Iceman">Iceman</a> © 2016 
+		
+		<a href="http://www.xiaoy.name" target="_blank" title="xiaoy">xiaoy</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"zs1379"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+
+  </body>
+</html>
+

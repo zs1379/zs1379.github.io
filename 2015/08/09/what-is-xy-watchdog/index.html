@@ -1,0 +1,405 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>what-is-xy-watchdog | Xy-Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="xiaoy">
+    
+    <meta name="description" content="场景在很多场景下，我们需要秒级地执行一些任务，例如每秒检查一些功能是否有新的需要处理的数据.
+在一些语言中我们可能采用一些阻塞的方式，例如BRPOP redis队列来实现，但是在PHP中，常见的作法是在cli脚本中进行sleep 1的操作或者在shell脚本中sleep 1后继续跑php脚本。
+而不">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="Xy-Home" title="Xy-Home"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Xy-Home">Xy-Home</a></h1>
+				<h2 class="blog-motto">依然对blog各种无爱，还是单纯记录吧～</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//baidu.com/s" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="wd" autocomplete="off" maxlength="20" placeholder="Search" />
+                        <input name=tn type=hidden value="bds">
+                        <input name=cl type=hidden value="3">
+                        <input name=ct type=hidden value="2097152">
+						<input type="hidden" name="si" value="www.xiaoy.name">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/08/09/what-is-xy-watchdog/" title="what-is-xy-watchdog" itemprop="url">what-is-xy-watchdog</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://www.xiaoy.name" title="xiaoy">xiaoy</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2015-08-09T13:21:17.000Z" itemprop="datePublished">2015-08-09</time>
+    Updated:<time datetime="2015-08-09T14:00:36.000Z" itemprop="dateModified">2015-08-09</time>
+    
+  </p>
+</header>
+
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#场景"><span class="toc-number">1.</span> <span class="toc-text">场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#go版watchdog"><span class="toc-number">2.</span> <span class="toc-text">go版watchdog</span></a></li></ol>
+		</div>
+		
+		<h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>在很多场景下，我们需要秒级地执行一些任务，例如每秒检查一些功能是否有新的需要处理的数据.</p>
+<p>在一些语言中我们可能采用一些阻塞的方式，例如BRPOP redis队列来实现，但是在PHP中，常见的作法是在cli脚本中进行sleep 1的操作或者在shell脚本中sleep 1后继续跑php脚本。</p>
+<p>而不管是使用哪种方式，都会碰到一些问题，首先是保证它能在系统中正常的运行，例如断电、进程意外退出等，这时候我们可能写一个简单的watchdog，利用crontab间断1分钟检测一下进程是否存在，不存在则启动一下就好了，这个也适用于系统意外断电后的自动重启。</p>
+<p>按照我们当时的作法，接下来watchdog就逐步地支持单程序多进程地跑，其实也就是检测一下进程数量，不够了就启动下。</p>
+<p>但是在线上跑久了后，我们会发现一个问题，进程有时候虽然存在，但是并未是正常运行状态的，于是我们的watchdog就抓瞎了。</p>
+<h2 id="go版watchdog"><a href="#go版watchdog" class="headerlink" title="go版watchdog"></a>go版watchdog</h2><p>其实使用shell语言也是可以解决上面的问题的，只是我虽然经常写shell，但是仍感觉和高级语言对比起来shell实在是反人类，包括awk等也是…..然后又正好想看下go，于是花半天时间熟悉下写个简单的程序练练手。</p>
+<p>于是呢，按照下面的想法实现了下。</p>
+<p>###shell的统一###</p>
+<p>首先，规范化所有需要运行的cli程序，统一采用shell的sleep 1进行调用：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#!/bin/bash</span></div><div class="line"><span class="comment">#检查消息队列</span></div><div class="line"></div><div class="line"><span class="comment">#等待时间</span></div><div class="line">wait_time=<span class="number">1</span></div><div class="line"></div><div class="line"><span class="keyword">while</span> <span class="keyword">true</span></div><div class="line"><span class="keyword">do</span></div><div class="line">  		<span class="keyword">echo</span> $(date <span class="string">'+%s'</span>) &gt; /data/pid/$$</div><div class="line"></div><div class="line">  		<span class="comment">##要执行的程序</span></div><div class="line">  		php xxxxxxx</div><div class="line"></div><div class="line">  		sleep $&#123;wait_time&#125;</div><div class="line">done</div></pre></td></tr></table></figure>
+<p>在中间，每次执行过程中，都将当前时间写入/data/pid/进程号 的文件中，注意哟，间隔时间不是1秒，而是1秒加上PHP程序运行的时间，如果在里面也进行sleep操作可能会造成一些坑，后面说。</p>
+<p>很明显，只要时间距离当前时间超过运行程序所需的时间，那就是进程已经假死了。</p>
+<p>###配置文件###</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#配置文件</span></div><div class="line"><span class="comment">#日志文件存放位置及名称</span></div><div class="line">logFile = /data/watchDog.log</div><div class="line"></div><div class="line"><span class="comment">#最大未执行时间，用于判断进程是否假死的最大时间，超过该时间未写入文件则判断为假死 秒</span></div><div class="line">slowTime = <span class="number">300</span></div><div class="line"></div><div class="line"><span class="comment">#进程时间保存位置</span></div><div class="line">pidDir = /data/pid/</div><div class="line"></div><div class="line"><span class="comment">#相关脚本所处位置以及可以启动的数量，格式需为xxx.sh = 数目 &gt;&gt; 脚本位置，注意必须为.sh文件</span></div><div class="line">/data/server/shell_center/shell/android_push_handle.sh = <span class="number">2</span> &gt;&gt; /tmp/nohup.log</div><div class="line">/data/server/shell_center/shell/register_handle.sh = <span class="number">1</span> &gt;&gt; /tmp/nohup.log</div><div class="line">/data/server/shell_center/shell/message_handle.sh = <span class="number">1</span> &gt;&gt; /tmp/nohup.log</div><div class="line">/data/server/shell_center/shell/notice_handle.sh = <span class="number">1</span> &gt;&gt; /tmp/nohup.log</div></pre></td></tr></table></figure>
+<p>第一个配置项logFile主要用于配置存放watchdog的日志，在程序运行过程中，启动进程或者杀死进程或者重启进程以及程序出错等信息都将会记录在该日志中。</p>
+<p>第二个配置项slowTime用于判断程序是否假死，前面说的程序sleep时间过长会导致的坑就来自这里，例如slowTime配置为5分钟，结果程序运行需要10分钟，那这时候会导致watchdog一直判断程序为假死，由于进程又是处于运行状态，会导致进程不断地进行重启。</p>
+<p>第三个配置项pidDir用于存放各个需要监控的进程的写入时间，例如/data/pid/111就是进程号111的进程写入的时间戳的保存文件。</p>
+<p>之后的配置文件就是用于配置需要监控的进程，现在仅支持配置数目，以及配置相应的日志路径，线上环境建议配置成不一样的日志文件。</p>
+<p>###补充###</p>
+<p>通过上面的说明，大致已经可以看出是啥想法了，就是有几点需要注意下：</p>
+<ul>
+<li>配置文件必须为/etc/xyDog.conf，当然大家可以自己编译修改下，xy只是xiaoy的简写，可以无视。</li>
+<li>进程数从多改为低的情况下，将会导致watchdog自动杀死多余的进程，不过不影响正在跑的PHP脚本，PHP脚本将会正常跑完。</li>
+<li>线上环境中出现过ps命令无法匹配到进程的情况，或者进程已经结束的情况，暂时未明白是什么原因，有知道的希望告知下~，因为此原因，watchdog不适用于需要保证进程的唯一性的场景。</li>
+<li>由于存在一种情况，就是shell写入pid文件的同时watchdog去读取pid文件，因为是非原子性的操作，因此可能会出现问题。不想使用锁等方式，因此采用较为简单的重试机制，一旦读到空时间戳，就休眠10毫秒，最多重试3次</li>
+</ul>
+<p>Authors: xiaoy <a href="&#109;&#97;&#x69;&#x6c;&#116;&#x6f;&#58;&#x7a;&#115;&#49;&#51;&#55;&#57;&#x40;&#x71;&#x71;&#x2e;&#99;&#111;&#x6d;">&#x7a;&#115;&#49;&#51;&#55;&#57;&#x40;&#x71;&#x71;&#x2e;&#99;&#111;&#x6d;</a></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/go/">go</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/go/">go</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://www.xiaoy.name/2015/08/09/what-is-xy-watchdog/" data-title="what-is-xy-watchdog | Xy-Home" data-tsina="1188724621" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2015/08/12/wei-fu-wu-1/" title="微服务实践-1">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  微服务实践-1</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2015/06/10/招聘那点事儿/"  title="招聘那点事儿">
+ <strong>NEXT:</strong><br/> 
+ <span>招聘那点事儿
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#场景"><span class="toc-number">1.</span> <span class="toc-text">场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#go版watchdog"><span class="toc-number">2.</span> <span class="toc-text">go版watchdog</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">Categories</p>
+		<ul>
+		
+			<li><a href="/categories/go/" title="go">go<sup>1</sup></a></li>
+		
+			<li><a href="/categories/java/" title="java">java<sup>2</sup></a></li>
+		
+			<li><a href="/categories/协议/" title="协议">协议<sup>1</sup></a></li>
+		
+			<li><a href="/categories/性能/" title="性能">性能<sup>3</sup></a></li>
+		
+			<li><a href="/categories/日常/" title="日常">日常<sup>4</sup></a></li>
+		
+			<li><a href="/categories/架构/" title="架构">架构<sup>3</sup></a></li>
+		
+			<li><a href="/categories/问题记录/" title="问题记录">问题记录<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/go/" title="go">go<sup>1</sup></a></li>
+		
+			<li><a href="/tags/java/" title="java">java<sup>2</sup></a></li>
+		
+			<li><a href="/tags/协议/" title="协议">协议<sup>1</sup></a></li>
+		
+			<li><a href="/tags/性能/" title="性能">性能<sup>3</sup></a></li>
+		
+			<li><a href="/tags/日常/" title="日常">日常<sup>4</sup></a></li>
+		
+			<li><a href="/tags/架构/" title="架构">架构<sup>3</sup></a></li>
+		
+			<li><a href="/tags/网络/" title="网络">网络<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+  <div class="archiveslist">
+    <p class="asidetitle"><a href="/archives">Archives</a></p>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a><span class="archive-list-count">3</span></li></ul>
+  </div>
+
+
+  
+  <div class="tagcloudlist">
+    <p class="asidetitle">Tag Cloud</p>
+    <div class="tagcloudlist clearfix">
+       <a href="/tags/go/" style="font-size: 10px;">go</a> <a href="/tags/java/" style="font-size: 13.33px;">java</a> <a href="/tags/协议/" style="font-size: 10px;">协议</a> <a href="/tags/性能/" style="font-size: 16.67px;">性能</a> <a href="/tags/日常/" style="font-size: 20px;">日常</a> <a href="/tags/架构/" style="font-size: 16.67px;">架构</a> <a href="/tags/网络/" style="font-size: 10px;">网络</a>
+    </div>
+  </div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<section class="info">
+		<p> 架构师，devops <br/>
+			only for save sth.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		<a href="https://github.com/zs1379" target="_blank" title="github"></a>
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wizicer/iceman" target="_blank" title="Iceman">Iceman</a> © 2016 
+		
+		<a href="http://www.xiaoy.name" target="_blank" title="xiaoy">xiaoy</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"zs1379"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+
+  </body>
+</html>
+

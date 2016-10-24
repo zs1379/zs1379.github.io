@@ -1,0 +1,403 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>移动互联网相关性能(1) | Xy-Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="xiaoy">
+    
+    <meta name="description" content="序APP的访问速度一直都是大家非常关注的一个点，而近期因为某些原因投入比较多的精力在这上面，所以记录下相关心得。
+一笔带过的前期优化刚接需要优化的项目时，APP平时不算非常卡，但是一旦遇到高峰期就卡得无法访问。我们通过修改整体架构，切割并分布各系统，让APP恢复到正常速度的水平。
+恩，这时候问题来了">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="Xy-Home" title="Xy-Home"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Xy-Home">Xy-Home</a></h1>
+				<h2 class="blog-motto">依然对blog各种无爱，还是单纯记录吧～</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//baidu.com/s" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="wd" autocomplete="off" maxlength="20" placeholder="Search" />
+                        <input name=tn type=hidden value="bds">
+                        <input name=cl type=hidden value="3">
+                        <input name=ct type=hidden value="2097152">
+						<input type="hidden" name="si" value="www.xiaoy.name">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/04/10/移动互联网相关性能-1/" title="移动互联网相关性能(1)" itemprop="url">移动互联网相关性能(1)</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://www.xiaoy.name" title="xiaoy">xiaoy</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2015-04-10T11:04:01.000Z" itemprop="datePublished">2015-04-10</time>
+    Updated:<time datetime="2015-04-13T12:42:47.000Z" itemprop="dateModified">2015-04-13</time>
+    
+  </p>
+</header>
+
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#序"><span class="toc-number">1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一笔带过的前期优化"><span class="toc-number">2.</span> <span class="toc-text">一笔带过的前期优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#用户的环境"><span class="toc-number">3.</span> <span class="toc-text">用户的环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#WIFI"><span class="toc-number">3.1.</span> <span class="toc-text">WIFI</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#频段"><span class="toc-number">3.1.1.</span> <span class="toc-text">频段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#位置对性能的影响"><span class="toc-number">3.1.2.</span> <span class="toc-text">位置对性能的影响</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#负载对性能的影响"><span class="toc-number">3.1.3.</span> <span class="toc-text">负载对性能的影响</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#总结"><span class="toc-number">3.1.4.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></li></ol>
+		</div>
+		
+		<h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>APP的访问速度一直都是大家非常关注的一个点，而近期因为某些原因投入比较多的精力在这上面，所以记录下相关心得。</p>
+<h2 id="一笔带过的前期优化"><a href="#一笔带过的前期优化" class="headerlink" title="一笔带过的前期优化"></a>一笔带过的前期优化</h2><p>刚接需要优化的项目时，APP平时不算非常卡，但是一旦遇到高峰期就卡得无法访问。<br>我们通过修改整体架构，切割并分布各系统，让APP恢复到正常速度的水平。</p>
+<p>恩，这时候问题来了，通过自己使用、基调统计等，发现在同一时间点，有些用户访问快，有些用户访问慢，因而统计了下相关可能影响性能的因素：</p>
+<ul>
+<li>用户端的网络影响很大，例如4G、WIFI、3G与2G，有时候真的就是两个世界的感觉</li>
+<li>不同地区的访问速度差别，服务器是挂在北京多线机房里的，总归有些地区访问比较慢</li>
+<li>服务器负载不均导致的部分情况等的相关影响</li>
+<li>首次DNS解析导致的速度慢，因为不同业务节点都有各自的二级域名，因此很多时候DNS缓存都是首次缓存，特别是一些访问率较低的地区，DNS几乎都得递归查询</li>
+</ul>
+<p>我们做了一些事情来优化相关的项，例如</p>
+<ul>
+<li>不同网络返回不同大小的图片及内容(很早就这样做了)</li>
+<li>采用第三方的图片服务来使用他们的CDN</li>
+<li>换个稳定点的机房 </li>
+<li>通过下发ip:端口列表来做到类似提前解析DNS的方式</li>
+<li>将服务做成可分布的，分布到多台机子上来进行多机多服务负载，以便更加地平均流量</li>
+</ul>
+<p>做完这些事情后，依然在有些情况下卡卡卡卡卡卡……<br>so，就有了下面的一些事情</p>
+<h2 id="用户的环境"><a href="#用户的环境" class="headerlink" title="用户的环境"></a>用户的环境</h2><p>想了想，还是按照整理完的流程来记录比较不容易混乱和前后跳来跳去～<br>首先，我们从用户的环境入手，一般情况下，移动互联网的用户主要访问都是来自于：WIFI、2G、3G、4G（排名不分先后）</p>
+<h3 id="WIFI"><a href="#WIFI" class="headerlink" title="WIFI"></a>WIFI</h3><p>一般说到wifi，很多朋友就会说，wifi肯定速度很快啦，如果有问题肯定是服务端问题…..[泪]<br>应该说我们需要知道一些东东：<br>无线路由器上的网速指的是理想情况下的网速，也就是频段都是它的，噪声是木有的，发射功率最大、位置最优，调制算法最优</p>
+<h4 id="频段"><a href="#频段" class="headerlink" title="频段"></a>频段</h4><p>我们知道wifi一般分为2.4GHz频段和5GHz频段。<br>2.4GHz的频段有三个不重叠的20MHz信道，也就是1、6、11，用无线网络信道检测软件我们可以很容易地看到。<br>经常我们还可以看到附近十几台路由器有三分之一和我们的信道是重叠的，so～这意味着什么呢，要知道信道的带宽是固定的！<br>也就是说，你家的无线路由器其实与重叠的信道共享带宽～，也就是说，隔壁的童鞋用重叠的信道看电影的话，你家的无线路由器的带宽居然会受到影响～～～<br>恩，所以我入了5GHz的路由器～，虽然反射和衍射能力变差了，但是在穿墙能力提升的同时，大多数情况下，还是很不容易产生冲突的。</p>
+<h4 id="位置对性能的影响"><a href="#位置对性能的影响" class="headerlink" title="位置对性能的影响"></a>位置对性能的影响</h4><p>曾经在公司有过这样的画面，同事要秒杀东西了，直接奔到无线路由器旁边，因为信号更好些～～～有道理莫？<br>恩，简单的说，有时候左手换到右手信号都会不一样。。。。。如果一开始速度很慢，换到无线路由器旁边位置其实也是个不错的选择，虽然不一定速度会变快- -</p>
+<h4 id="负载对性能的影响"><a href="#负载对性能的影响" class="headerlink" title="负载对性能的影响"></a>负载对性能的影响</h4><p>有线下使用的机制—冲突检测(Collision Detection)机制：发送方A检测到信道空闲了，发送数据，B也检测到空闲也发了，结果冲突了，在发送过程中就检测到冲突，所以进行指数等待重发<br>wifi下使用的机制—冲突避免(Collision Avoidance)机制：发送方A检测到信道空闲了，发送数据，B也检测到空闲也发了，结果冲突了，等发送完数据帧后接收方都木有确认，所以进行指数等待重发<br>可以看到，wifi下变为发完数据帧才能知道是否冲突了，这种概率访问方式应该说会影响高负载情况下的性能，所以，高负载情况下的无线路由器很容易性能不稳定<br>负载的增长会使得冲突次数上升很快，性能不稳定也是显而易见的。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><ul>
+<li>频段是有限的，随着无线路由器越来越泛滥，信道的冲突已经是必然的了，不过暂时5GHz还是个不错的选择，国家应该也会逐步开放5GHz的更多频段</li>
+<li>无线很容易因为信噪比、位置而导致带宽变化</li>
+<li>冲突避免机制很容易导致非常多的冲突，不过由于wifi的物理层和数据链路层有自己的重发和纠错机制，所以上层无法感知</li>
+<li>wifi会使得首跳延迟无法保证，而使用无线网桥因为多了一跳，延迟时间就更难保证了</li>
+<li>总而言之，在wifi热点多的地方用有线还是对延迟有要求的人的首选～虽然不适用于移动互联网</li>
+</ul>
+<p>wifi相关差不多就是这样子了，结论就是，还真没办法做什么优化，只能说客户端可以根据请求速度来进行图片流视频流大小的选择。</p>
+<p><strong>以上内容仅为经验上的一些整理，如有错误烦请通知下，让我有机会修改下知识误区～</strong></p>
+<p>Authors: xiaoy <a href="&#109;&#97;&#x69;&#108;&#x74;&#111;&#58;&#x7a;&#x73;&#49;&#x33;&#55;&#x39;&#x40;&#113;&#x71;&#x2e;&#x63;&#x6f;&#109;">&#x7a;&#x73;&#49;&#x33;&#55;&#x39;&#x40;&#113;&#x71;&#x2e;&#x63;&#x6f;&#109;</a></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/性能/">性能</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/性能/">性能</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://www.xiaoy.name/2015/04/10/移动互联网相关性能-1/" data-title="移动互联网相关性能(1) | Xy-Home" data-tsina="1188724621" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2015/04/11/移动互联网相关性能-2/" title="移动互联网相关性能(2)">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  移动互联网相关性能(2)</span>
+</a>
+</div>
+
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#序"><span class="toc-number">1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一笔带过的前期优化"><span class="toc-number">2.</span> <span class="toc-text">一笔带过的前期优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#用户的环境"><span class="toc-number">3.</span> <span class="toc-text">用户的环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#WIFI"><span class="toc-number">3.1.</span> <span class="toc-text">WIFI</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#频段"><span class="toc-number">3.1.1.</span> <span class="toc-text">频段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#位置对性能的影响"><span class="toc-number">3.1.2.</span> <span class="toc-text">位置对性能的影响</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#负载对性能的影响"><span class="toc-number">3.1.3.</span> <span class="toc-text">负载对性能的影响</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#总结"><span class="toc-number">3.1.4.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">Categories</p>
+		<ul>
+		
+			<li><a href="/categories/go/" title="go">go<sup>1</sup></a></li>
+		
+			<li><a href="/categories/java/" title="java">java<sup>2</sup></a></li>
+		
+			<li><a href="/categories/协议/" title="协议">协议<sup>1</sup></a></li>
+		
+			<li><a href="/categories/性能/" title="性能">性能<sup>3</sup></a></li>
+		
+			<li><a href="/categories/日常/" title="日常">日常<sup>4</sup></a></li>
+		
+			<li><a href="/categories/架构/" title="架构">架构<sup>3</sup></a></li>
+		
+			<li><a href="/categories/问题记录/" title="问题记录">问题记录<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/go/" title="go">go<sup>1</sup></a></li>
+		
+			<li><a href="/tags/java/" title="java">java<sup>2</sup></a></li>
+		
+			<li><a href="/tags/协议/" title="协议">协议<sup>1</sup></a></li>
+		
+			<li><a href="/tags/性能/" title="性能">性能<sup>3</sup></a></li>
+		
+			<li><a href="/tags/日常/" title="日常">日常<sup>4</sup></a></li>
+		
+			<li><a href="/tags/架构/" title="架构">架构<sup>3</sup></a></li>
+		
+			<li><a href="/tags/网络/" title="网络">网络<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+  <div class="archiveslist">
+    <p class="asidetitle"><a href="/archives">Archives</a></p>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a><span class="archive-list-count">3</span></li></ul>
+  </div>
+
+
+  
+  <div class="tagcloudlist">
+    <p class="asidetitle">Tag Cloud</p>
+    <div class="tagcloudlist clearfix">
+       <a href="/tags/go/" style="font-size: 10px;">go</a> <a href="/tags/java/" style="font-size: 13.33px;">java</a> <a href="/tags/协议/" style="font-size: 10px;">协议</a> <a href="/tags/性能/" style="font-size: 16.67px;">性能</a> <a href="/tags/日常/" style="font-size: 20px;">日常</a> <a href="/tags/架构/" style="font-size: 16.67px;">架构</a> <a href="/tags/网络/" style="font-size: 10px;">网络</a>
+    </div>
+  </div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<section class="info">
+		<p> 架构师，devops <br/>
+			only for save sth.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		<a href="https://github.com/zs1379" target="_blank" title="github"></a>
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wizicer/iceman" target="_blank" title="Iceman">Iceman</a> © 2016 
+		
+		<a href="http://www.xiaoy.name" target="_blank" title="xiaoy">xiaoy</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"zs1379"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+
+  </body>
+</html>
+

@@ -1,0 +1,436 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>【笔记】jvm相关二 | Xy-Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="xiaoy">
+    
+    <meta name="description" content="续这几天忙于处理数据库的异常问题，七天通宵了三天，外加两天在公司呆到2点，也是醉了。今天晚上终于有时间静下心来好好复习下这块了。
+相关类型
+类类型[Class Type]          {引用类型}
+数组类型[Array Type]         {引用类型}
+接口类型[Interface T">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="Xy-Home" title="Xy-Home"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Xy-Home">Xy-Home</a></h1>
+				<h2 class="blog-motto">依然对blog各种无爱，还是单纯记录吧～</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//baidu.com/s" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="wd" autocomplete="off" maxlength="20" placeholder="Search" />
+                        <input name=tn type=hidden value="bds">
+                        <input name=cl type=hidden value="3">
+                        <input name=ct type=hidden value="2097152">
+						<input type="hidden" name="si" value="www.xiaoy.name">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/10/27/jvm1/" title="【笔记】jvm相关二" itemprop="url">【笔记】jvm相关二</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://www.xiaoy.name" title="xiaoy">xiaoy</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2015-10-27T14:36:18.000Z" itemprop="datePublished">2015-10-27</time>
+    Updated:<time datetime="2015-11-12T15:35:31.000Z" itemprop="dateModified">2015-11-12</time>
+    
+  </p>
+</header>
+
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#续"><span class="toc-number">1.</span> <span class="toc-text">续</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#相关类型"><span class="toc-number">2.</span> <span class="toc-text">相关类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#运行时"><span class="toc-number">3.</span> <span class="toc-text">运行时</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#JAVA堆"><span class="toc-number">3.1.</span> <span class="toc-text">JAVA堆</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#方法区"><span class="toc-number">3.1.1.</span> <span class="toc-text">方法区</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JAVA虚拟机栈"><span class="toc-number">3.2.</span> <span class="toc-text">JAVA虚拟机栈</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#栈帧"><span class="toc-number">3.2.1.</span> <span class="toc-text">栈帧</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#本地-局部变量表"><span class="toc-number">3.2.1.1.</span> <span class="toc-text">本地(局部变量表)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#操作数栈"><span class="toc-number">3.2.1.2.</span> <span class="toc-text">操作数栈</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#动态链接"><span class="toc-number">3.2.1.3.</span> <span class="toc-text">动态链接</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#备忘"><span class="toc-number">4.</span> <span class="toc-text">备忘</span></a></li></ol>
+		</div>
+		
+		<h2 id="续"><a href="#续" class="headerlink" title="续"></a>续</h2><p>这几天忙于处理数据库的异常问题，七天通宵了三天，外加两天在公司呆到2点，也是醉了。今天晚上终于有时间静下心来好好复习下这块了。</p>
+<h2 id="相关类型"><a href="#相关类型" class="headerlink" title="相关类型"></a>相关类型</h2><ul>
+<li>类类型[Class Type]          {引用类型}</li>
+<li>数组类型[Array Type]         {引用类型}</li>
+<li>接口类型[Interface Type]   {引用类型}</li>
+<li>数值类型[Numeric Type]     {原始类型}</li>
+<li>boolean[Boolean Type]     {原始类型}</li>
+<li>returnAddress[ReturnAddress Type]  {无数据类型对应}</li>
+</ul>
+<h2 id="运行时"><a href="#运行时" class="headerlink" title="运行时"></a>运行时</h2><ul>
+<li>PC寄存器</li>
+<li>JAVA堆</li>
+<li>JAVA虚拟机栈</li>
+<li>本地方法栈</li>
+<li>直接内存{例如NIO}</li>
+</ul>
+<h3 id="JAVA堆"><a href="#JAVA堆" class="headerlink" title="JAVA堆"></a>JAVA堆</h3><ul>
+<li>各种GC管理的对象</li>
+<li>方法区</li>
+</ul>
+<h4 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h4><ul>
+<li>运行时常量池</li>
+<li>字段</li>
+<li>方法数据</li>
+<li>构造函数</li>
+<li>方法字节码</li>
+<li>特殊方法</li>
+</ul>
+<h3 id="JAVA虚拟机栈"><a href="#JAVA虚拟机栈" class="headerlink" title="JAVA虚拟机栈"></a>JAVA虚拟机栈</h3><p>用于存放栈帧</p>
+<h4 id="栈帧"><a href="#栈帧" class="headerlink" title="栈帧"></a>栈帧</h4><p>主要存放了数据及部分过程结果，生命周期与方法一致</p>
+<ul>
+<li>本地(局部)变量表</li>
+<li>操作数栈</li>
+<li>动态链接</li>
+<li>方法返回地址</li>
+</ul>
+<h5 id="本地-局部变量表"><a href="#本地-局部变量表" class="headerlink" title="本地(局部变量表)"></a>本地(局部变量表)</h5><ul>
+<li>32位的solt</li>
+<li>参数值到参数列表的传递   0:this</li>
+<li>各种变量</li>
+<li>编译器期间可知，方法运行期间不再改变大小</li>
+</ul>
+<h5 id="操作数栈"><a href="#操作数栈" class="headerlink" title="操作数栈"></a>操作数栈</h5><ul>
+<li>1单位为32位</li>
+<li>接收方法返回结果</li>
+<li>准备调用其它方法的参数</li>
+</ul>
+<h5 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h5><ul>
+<li>指向当前方法所属类的运行时常量池</li>
+</ul>
+<h2 id="备忘"><a href="#备忘" class="headerlink" title="备忘"></a>备忘</h2><ul>
+<li>boolean编译后被int型所替代 [HotSpot]</li>
+<li>boolean数组编译后会变为byte数组 [HotSpot]</li>
+</ul>
+<hr>
+<p>Authors: xiaoy <a href="&#109;&#x61;&#105;&#108;&#x74;&#111;&#58;&#122;&#115;&#x31;&#51;&#x37;&#x39;&#x40;&#113;&#113;&#46;&#99;&#111;&#109;">&#122;&#115;&#x31;&#51;&#x37;&#x39;&#x40;&#113;&#113;&#46;&#99;&#111;&#109;</a></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/java/">java</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/java/">java</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://www.xiaoy.name/2015/10/27/jvm1/" data-title="【笔记】jvm相关二 | Xy-Home" data-tsina="1188724621" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/06/04/book-list-by-xiaoy/" title="书籍相关分享">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  书籍相关分享</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2015/10/21/jvm/"  title="【笔记】jvm相关一">
+ <strong>NEXT:</strong><br/> 
+ <span>【笔记】jvm相关一
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#续"><span class="toc-number">1.</span> <span class="toc-text">续</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#相关类型"><span class="toc-number">2.</span> <span class="toc-text">相关类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#运行时"><span class="toc-number">3.</span> <span class="toc-text">运行时</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#JAVA堆"><span class="toc-number">3.1.</span> <span class="toc-text">JAVA堆</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#方法区"><span class="toc-number">3.1.1.</span> <span class="toc-text">方法区</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JAVA虚拟机栈"><span class="toc-number">3.2.</span> <span class="toc-text">JAVA虚拟机栈</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#栈帧"><span class="toc-number">3.2.1.</span> <span class="toc-text">栈帧</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#本地-局部变量表"><span class="toc-number">3.2.1.1.</span> <span class="toc-text">本地(局部变量表)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#操作数栈"><span class="toc-number">3.2.1.2.</span> <span class="toc-text">操作数栈</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#动态链接"><span class="toc-number">3.2.1.3.</span> <span class="toc-text">动态链接</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#备忘"><span class="toc-number">4.</span> <span class="toc-text">备忘</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">Categories</p>
+		<ul>
+		
+			<li><a href="/categories/go/" title="go">go<sup>1</sup></a></li>
+		
+			<li><a href="/categories/java/" title="java">java<sup>2</sup></a></li>
+		
+			<li><a href="/categories/协议/" title="协议">协议<sup>1</sup></a></li>
+		
+			<li><a href="/categories/性能/" title="性能">性能<sup>3</sup></a></li>
+		
+			<li><a href="/categories/日常/" title="日常">日常<sup>4</sup></a></li>
+		
+			<li><a href="/categories/架构/" title="架构">架构<sup>3</sup></a></li>
+		
+			<li><a href="/categories/问题记录/" title="问题记录">问题记录<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/go/" title="go">go<sup>1</sup></a></li>
+		
+			<li><a href="/tags/java/" title="java">java<sup>2</sup></a></li>
+		
+			<li><a href="/tags/协议/" title="协议">协议<sup>1</sup></a></li>
+		
+			<li><a href="/tags/性能/" title="性能">性能<sup>3</sup></a></li>
+		
+			<li><a href="/tags/日常/" title="日常">日常<sup>4</sup></a></li>
+		
+			<li><a href="/tags/架构/" title="架构">架构<sup>3</sup></a></li>
+		
+			<li><a href="/tags/网络/" title="网络">网络<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+  <div class="archiveslist">
+    <p class="asidetitle"><a href="/archives">Archives</a></p>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a><span class="archive-list-count">3</span></li></ul>
+  </div>
+
+
+  
+  <div class="tagcloudlist">
+    <p class="asidetitle">Tag Cloud</p>
+    <div class="tagcloudlist clearfix">
+       <a href="/tags/go/" style="font-size: 10px;">go</a> <a href="/tags/java/" style="font-size: 13.33px;">java</a> <a href="/tags/协议/" style="font-size: 10px;">协议</a> <a href="/tags/性能/" style="font-size: 16.67px;">性能</a> <a href="/tags/日常/" style="font-size: 20px;">日常</a> <a href="/tags/架构/" style="font-size: 16.67px;">架构</a> <a href="/tags/网络/" style="font-size: 10px;">网络</a>
+    </div>
+  </div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<section class="info">
+		<p> 架构师，devops <br/>
+			only for save sth.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		<a href="https://github.com/zs1379" target="_blank" title="github"></a>
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wizicer/iceman" target="_blank" title="Iceman">Iceman</a> © 2016 
+		
+		<a href="http://www.xiaoy.name" target="_blank" title="xiaoy">xiaoy</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"zs1379"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+
+  </body>
+</html>
+

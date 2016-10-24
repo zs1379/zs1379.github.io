@@ -1,0 +1,412 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>微服务实践-1 | Xy-Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="xiaoy">
+    
+    <meta name="description" content="##序##
+距离业务系统逐步替换为微服务已经接近9个月了，中间也是不断地碰到各种坑，不过也获得了各种实践经验，当然不仅仅是微服务相关的，包含了整个架构及人员的方方面面。
+趁着近期放松心情，把一些东西记录下~仅当做怀念（因为在测试docker上碰到各种纠结的事情，万分无力，趁着月底去参加CUNTCon">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="Xy-Home" title="Xy-Home"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Xy-Home">Xy-Home</a></h1>
+				<h2 class="blog-motto">依然对blog各种无爱，还是单纯记录吧～</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//baidu.com/s" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="wd" autocomplete="off" maxlength="20" placeholder="Search" />
+                        <input name=tn type=hidden value="bds">
+                        <input name=cl type=hidden value="3">
+                        <input name=ct type=hidden value="2097152">
+						<input type="hidden" name="si" value="www.xiaoy.name">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/08/12/wei-fu-wu-1/" title="微服务实践-1" itemprop="url">微服务实践-1</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://www.xiaoy.name" title="xiaoy">xiaoy</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2015-08-12T13:59:20.000Z" itemprop="datePublished">2015-08-12</time>
+    Updated:<time datetime="2015-08-18T14:44:54.000Z" itemprop="dateModified">2015-08-18</time>
+    
+  </p>
+</header>
+
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+		</div>
+		
+		<p>##序##</p>
+<p>距离业务系统逐步替换为微服务已经接近9个月了，中间也是不断地碰到各种坑，不过也获得了各种实践经验，当然不仅仅是微服务相关的，包含了整个架构及人员的方方面面。</p>
+<p>趁着近期放松心情，把一些东西记录下~仅当做怀念（因为在测试docker上碰到各种纠结的事情，万分无力，趁着月底去参加CUNTCon大会前好好休息下- -）</p>
+<p>##壹##</p>
+<p>###环境###</p>
+<p>在上微服务之前，我们的服务端虽然访问量很大，却还是以一代架构混合着二代架构的模式跑着，虽然没出什么大问题，但是一切都显得岌岌可危。</p>
+<p>而从一个大系统到分布式的微服务，是一个非常大的改动，特别是还需要进行旧版本兼容的情况下(我们的服务端主要为APP访问的接口及多个后台系统)~</p>
+<p>这种改动对于产品、运营、推广等部分的KPI而言是看不见的，就如同我们的重构一般，因此推动肯定是非常困难的，不仅仅是技术上的阻力，而是来自于整个公司的一种压力。</p>
+<p>于是必然需要等待某些契机，在将分析报告发到老大邮箱后，我就开始做起前期的一些准备工作。</p>
+<p>所谓的分析报告其实真的只是分析，我也很难通过当时的系统取得瓶颈点，于是只能分析当前存在的问题及后果~ 但是问题如果没出现的话更像是一种危言耸听…特别是对于一个入职不到半年的人而言。</p>
+<p>当时的系统其实很容易就可以揪出一些问题(其实包括如今全微服务化的系统也一样，还是很多小问题待优化)：</p>
+<ul>
+<li>水平扩展的时候，需要堆硬件，因为不管是CPU密集或者内存密集型的，都在同个进程里，机器只能以最短的那根木板的承受能力来承受压力…</li>
+<li>单点的现象非常严重</li>
+<li>代码耦合已经到很极致的地步了，几乎无法拆分开，一个小业务挂掉可能影响整个系统</li>
+<li>开发人员在需求和bug下疲于奔命，整体流程不够清晰，很多业务需要靠查代码才能理解</li>
+<li>服务不够稳定，SLA已经掉到每天在高峰时期都可以看到APP必现的不稳定现象</li>
+</ul>
+<p>当时每次全量推送的时候，我们总是需要蹲在电脑前盯着监控，不知道何时服务就不行了….记忆深刻的有次在回家的车上拿出电脑处理高峰时期的线上问题….</p>
+<p>而趁着还没有变革的可能的时候，我按照当时的想法重写了一下自己写的一套专门针对APP-服务端的php框架(xy框架)，其中最主要的几项改变：</p>
+<ul>
+<li>取消了严格的REST风格，为了易用性</li>
+<li>将分布式的SOA调用封装到底层，让分布式调用与正常的service调用方式一致，让开发人员无碍地进行远程调用，将远程访问的错误处理、重试机制等在底层实现</li>
+<li>后期修改了下返回值的规范，让开发人员采用与GO语言一致的水平人为控制错误处理，而非异常(不过框架自身为了跨业务传递采用了异常机制)</li>
+</ul>
+<p>中间还发生了一些有趣的事情，像表决是否采用xy框架还是用其它的、大家一起讨论新的开发模式等，其实都很有纪念意义。</p>
+<p>###契机###</p>
+<p>记得是在九月中旬的时候，随着用户不断增长，预期的问题开始逐步出现，先是高峰期业务的各种卡顿，于是我们天天待到12点、1点，就为了找出系统中的一些可优化点延缓崩溃的发生，那段时间也确实修正了不少优化上的问题，因为碰到了各种瓶颈，redis的单核限制、redis的内存、mysql的IO、慢程序等。</p>
+<p>但是该来的还是一样会来，某天APP直接各种无法使用，修复问题的速度还没问题冒出来的速度快，当时真的是千疮百孔的感觉….不过还好，问题的严重带来了修改的契机，与其说上微服务是一项架构上的大调整，其实当时对运营等来说更是对app的拯救…架构上的价值几乎可以忽略不计….</p>
+<p>不过不管怎么说，至少有了契机，虽然当时仅仅给了两周还是三周的开发时间。</p>
+<pre><code>休息下理下思路再继续写~
+</code></pre><hr>
+<p><strong>以上内容仅为经验上的一些整理，如有错误烦请通知下，让我有机会修改下知识误区～</strong></p>
+<p>Authors: xiaoy <a href="&#x6d;&#x61;&#105;&#x6c;&#x74;&#x6f;&#x3a;&#x7a;&#115;&#49;&#51;&#55;&#57;&#x40;&#113;&#113;&#x2e;&#99;&#111;&#109;">&#x7a;&#115;&#49;&#51;&#55;&#57;&#x40;&#113;&#113;&#x2e;&#99;&#111;&#109;</a></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/架构/">架构</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/架构/">架构</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://www.xiaoy.name/2015/08/12/wei-fu-wu-1/" data-title="微服务实践-1 | Xy-Home" data-tsina="1188724621" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2015/08/18/wei-fu-wu-2/" title="微服务实践-2">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  微服务实践-2</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2015/08/09/what-is-xy-watchdog/"  title="what-is-xy-watchdog">
+ <strong>NEXT:</strong><br/> 
+ <span>what-is-xy-watchdog
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">Categories</p>
+		<ul>
+		
+			<li><a href="/categories/go/" title="go">go<sup>1</sup></a></li>
+		
+			<li><a href="/categories/java/" title="java">java<sup>2</sup></a></li>
+		
+			<li><a href="/categories/协议/" title="协议">协议<sup>1</sup></a></li>
+		
+			<li><a href="/categories/性能/" title="性能">性能<sup>3</sup></a></li>
+		
+			<li><a href="/categories/日常/" title="日常">日常<sup>4</sup></a></li>
+		
+			<li><a href="/categories/架构/" title="架构">架构<sup>3</sup></a></li>
+		
+			<li><a href="/categories/问题记录/" title="问题记录">问题记录<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/go/" title="go">go<sup>1</sup></a></li>
+		
+			<li><a href="/tags/java/" title="java">java<sup>2</sup></a></li>
+		
+			<li><a href="/tags/协议/" title="协议">协议<sup>1</sup></a></li>
+		
+			<li><a href="/tags/性能/" title="性能">性能<sup>3</sup></a></li>
+		
+			<li><a href="/tags/日常/" title="日常">日常<sup>4</sup></a></li>
+		
+			<li><a href="/tags/架构/" title="架构">架构<sup>3</sup></a></li>
+		
+			<li><a href="/tags/网络/" title="网络">网络<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+  <div class="archiveslist">
+    <p class="asidetitle"><a href="/archives">Archives</a></p>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a><span class="archive-list-count">3</span></li></ul>
+  </div>
+
+
+  
+  <div class="tagcloudlist">
+    <p class="asidetitle">Tag Cloud</p>
+    <div class="tagcloudlist clearfix">
+       <a href="/tags/go/" style="font-size: 10px;">go</a> <a href="/tags/java/" style="font-size: 13.33px;">java</a> <a href="/tags/协议/" style="font-size: 10px;">协议</a> <a href="/tags/性能/" style="font-size: 16.67px;">性能</a> <a href="/tags/日常/" style="font-size: 20px;">日常</a> <a href="/tags/架构/" style="font-size: 16.67px;">架构</a> <a href="/tags/网络/" style="font-size: 10px;">网络</a>
+    </div>
+  </div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<section class="info">
+		<p> 架构师，devops <br/>
+			only for save sth.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		<a href="https://github.com/zs1379" target="_blank" title="github"></a>
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wizicer/iceman" target="_blank" title="Iceman">Iceman</a> © 2016 
+		
+		<a href="http://www.xiaoy.name" target="_blank" title="xiaoy">xiaoy</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"zs1379"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+
+  </body>
+</html>
+

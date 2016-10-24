@@ -1,0 +1,472 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>关于帧前八字节的疑惑 | Xy-Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="xiaoy">
+    
+    <meta name="description" content="##缘由大好的周六下午，朋友给的一个交换机的资料，让我对之前一些东西产生了疑问，理了几个小时资料，终于理顺了下思路，顺便记录一些过程。
+朋友的公司的交换机比较神奇，是属于直通转发式的，按照资料上看也就是说只读取帧的前14个字节，按照我之前的理解，我认为是读取了目的MAC、源MAC、以及类型。但是我疑">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="Xy-Home" title="Xy-Home"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Xy-Home">Xy-Home</a></h1>
+				<h2 class="blog-motto">依然对blog各种无爱，还是单纯记录吧～</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//baidu.com/s" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="wd" autocomplete="off" maxlength="20" placeholder="Search" />
+                        <input name=tn type=hidden value="bds">
+                        <input name=cl type=hidden value="3">
+                        <input name=ct type=hidden value="2097152">
+						<input type="hidden" name="si" value="www.xiaoy.name">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/09/10/20160910/" title="关于帧前八字节的疑惑" itemprop="url">关于帧前八字节的疑惑</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://www.xiaoy.name" title="xiaoy">xiaoy</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2016-09-10T15:42:24.000Z" itemprop="datePublished">2016-09-10</time>
+    Updated:<time datetime="2016-09-11T08:40:01.000Z" itemprop="dateModified">2016-09-11</time>
+    
+  </p>
+</header>
+
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+		</div>
+		
+		<p>##缘由<br>大好的周六下午，朋友给的一个交换机的资料，让我对之前一些东西产生了疑问，理了几个小时资料，终于理顺了下思路，顺便记录一些过程。</p>
+<p>朋友的公司的交换机比较神奇，是属于直通转发式的，按照资料上看也就是说只读取帧的前14个字节，按照我之前的理解，我认为是读取了目的MAC、源MAC、以及类型。但是我疑惑的是既然是直通式的，那为什么需要去读取源MAC和类型，很难想通。暴露出基础不扎实了- -</p>
+<p>在翻阅了相关资料后，发现所谓的14个字节指的是Preamble+目的MAC，也就是说在我熟知的1518字节外，最前端还有一个前导的8字节，一开始我以为是之前看TCP/IP详解时漏掉了，但是翻了下依然没看到，这就有点神奇了。</p>
+<p>##one</p>
+<p>查询资料后，发现了一些之前所没去注意的东东：<br>首先，我所熟知的网络是Ethernet2的封装格式【RFC894】，应该也可以算上最使用的，如下表：</p>
+<table>
+<thead>
+<tr>
+<th>目的MAC</th>
+<th>源MAC</th>
+<th>类型</th>
+<th>数据</th>
+<th>CRC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>6字节</td>
+<td>6字节</td>
+<td>2字节</td>
+<td>1500字节</td>
+<td>4字节</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td>一般情况下20-IP头+20-TCP头+数据</td>
+</tr>
+</tbody>
+</table>
+<p>而早先没注意到的一点是，在比较晚出的【RFC1042】中，也就是802.3的规范中虽然目的MAC和源MAC是一致的，然后2个字节类型变成了2个字节的长度，后面的IP数据报仅有1492个字节，因为花费了8个字节用于放置802.2的LLC及SNAP，也就是如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th>目的MAC</th>
+<th>源MAC</th>
+<th>长度</th>
+<th>DSAP</th>
+<th>SSAP</th>
+<th>cntl</th>
+<th>org code</th>
+<th>类型</th>
+<th>数据</th>
+<th>CRC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>6字节</td>
+<td>6字节</td>
+<td>2字节</td>
+<td>1字节</td>
+<td>1字节</td>
+<td>1字节</td>
+<td>3字节</td>
+<td>2字节</td>
+<td>1492字节</td>
+<td>4字节</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td>目标服务访问点</td>
+<td>源服务访问点</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>在这边DSAP+SSAP+cntl这三个字节属于802.2的LLC，而org code及类型这五个字节属于802.2的SNAP（子网接入协议）。</p>
+<p>顺便带一句，经常有童鞋问起为啥子MTU有时候是1500，有时候是1492，原因就在上面。</p>
+<p>##two</p>
+<p>而如果按照Ethernet2的封装格式，按照资料上的描述，在最前端还有8个字节，那就变成如下表了：</p>
+<table>
+<thead>
+<tr>
+<th>Preamble</th>
+<th>目的MAC</th>
+<th>源MAC</th>
+<th>类型</th>
+<th>数据</th>
+<th>CRC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>8字节</td>
+<td>6字节</td>
+<td>6字节</td>
+<td>2字节</td>
+<td>1500字节</td>
+<td>4字节</td>
+</tr>
+</tbody>
+</table>
+<p>但是不知道为何，除了【RFC1242】外，我并未在ietf上发现关于Preamble的解释，不过在思科的书上发现了以下的一些东东。</p>
+<p>在Ethernet2中，它属于导前码，用于标示数据帧是否合法。不过我感觉它更倾向于是一种信令，而不是数据帧，这块如果看到的童鞋有资料也麻烦说一下下。</p>
+<p>而在802.3中，它被分为了前7个字节的导前码和1个字节的帧起始定界符，也就是所谓的SFD，SFD用于标示下一个字节为MAC，同时标明该帧是属于Ethernet2还是802.3的数据帧。</p>
+<p>##three<br>有点吐槽的欲望，翻阅资料其实还是很浪费时间，特别是RFC文档，手头上当时留的一份2012年的RFC-pdf版也已经落伍了，现在只能在ietf上查询，而即将破8k的RFC文档再也不像以前那么好翻阅了。。。。。<br>凌晨2点，记录完毕准备睡觉咯</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/协议/">协议</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/协议/">协议</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://www.xiaoy.name/2016/09/10/20160910/" data-title="关于帧前八字节的疑惑 | Xy-Home" data-tsina="1188724621" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2016/08/30/connection-reset-by-peer-md/"  title="奇怪的RST返回">
+ <strong>NEXT:</strong><br/> 
+ <span>奇怪的RST返回
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">Categories</p>
+		<ul>
+		
+			<li><a href="/categories/go/" title="go">go<sup>1</sup></a></li>
+		
+			<li><a href="/categories/java/" title="java">java<sup>2</sup></a></li>
+		
+			<li><a href="/categories/协议/" title="协议">协议<sup>1</sup></a></li>
+		
+			<li><a href="/categories/性能/" title="性能">性能<sup>3</sup></a></li>
+		
+			<li><a href="/categories/日常/" title="日常">日常<sup>4</sup></a></li>
+		
+			<li><a href="/categories/架构/" title="架构">架构<sup>3</sup></a></li>
+		
+			<li><a href="/categories/问题记录/" title="问题记录">问题记录<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/go/" title="go">go<sup>1</sup></a></li>
+		
+			<li><a href="/tags/java/" title="java">java<sup>2</sup></a></li>
+		
+			<li><a href="/tags/协议/" title="协议">协议<sup>1</sup></a></li>
+		
+			<li><a href="/tags/性能/" title="性能">性能<sup>3</sup></a></li>
+		
+			<li><a href="/tags/日常/" title="日常">日常<sup>4</sup></a></li>
+		
+			<li><a href="/tags/架构/" title="架构">架构<sup>3</sup></a></li>
+		
+			<li><a href="/tags/网络/" title="网络">网络<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+  <div class="archiveslist">
+    <p class="asidetitle"><a href="/archives">Archives</a></p>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a><span class="archive-list-count">3</span></li></ul>
+  </div>
+
+
+  
+  <div class="tagcloudlist">
+    <p class="asidetitle">Tag Cloud</p>
+    <div class="tagcloudlist clearfix">
+       <a href="/tags/go/" style="font-size: 10px;">go</a> <a href="/tags/java/" style="font-size: 13.33px;">java</a> <a href="/tags/协议/" style="font-size: 10px;">协议</a> <a href="/tags/性能/" style="font-size: 16.67px;">性能</a> <a href="/tags/日常/" style="font-size: 20px;">日常</a> <a href="/tags/架构/" style="font-size: 16.67px;">架构</a> <a href="/tags/网络/" style="font-size: 10px;">网络</a>
+    </div>
+  </div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<section class="info">
+		<p> 架构师，devops <br/>
+			only for save sth.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		<a href="https://github.com/zs1379" target="_blank" title="github"></a>
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wizicer/iceman" target="_blank" title="Iceman">Iceman</a> © 2016 
+		
+		<a href="http://www.xiaoy.name" target="_blank" title="xiaoy">xiaoy</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"zs1379"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+
+  </body>
+</html>
+
