@@ -4,14 +4,15 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>移动互联网相关性能(1) | Xy-Home</title>
+    <title>codis迁移solt时的一个微坑 | Xy-Home</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="xiaoy">
     
-    <meta name="description" content="序APP的访问速度一直都是大家非常关注的一个点，而近期因为某些原因投入比较多的精力在这上面，所以记录下相关心得。
-一笔带过的前期优化刚接需要优化的项目时，APP平时不算非常卡，但是一旦遇到高峰期就卡得无法访问。我们通过修改整体架构，切割并分布各系统，让APP恢复到正常速度的水平。
-恩，这时候问题来了">
+    <meta name="description" content="##引子
+前几日半夜11点多，运维的同事正在处理服务器被cc的事情，然后到了十二点整，报警邮件突然疯狂而至，几乎都是提示codis-proxy无法连接。接着几分钟后客服及运营同事也相继反馈app的功能开始出现不稳定现象。
+##分析过程
+第一时间打开了电脑，虽然刚被攻击，但是感觉此事应该与攻击无关，接">
     
     
     
@@ -71,15 +72,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/04/10/移动互联网相关性能-1/" title="移动互联网相关性能(1)" itemprop="url">移动互联网相关性能(1)</a>
+      <a href="/2017/03/17/err-of-the-codis-solt-migrate/" title="codis迁移solt时的一个微坑" itemprop="url">codis迁移solt时的一个微坑</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://www.xiaoy.name" title="xiaoy">xiaoy</a>
     </p>
   <p class="article-time">
-    <time datetime="2015-04-10T11:04:01.000Z" itemprop="datePublished">2015-04-10</time>
-    Updated:<time datetime="2015-04-13T12:42:47.000Z" itemprop="dateModified">2015-04-13</time>
+    <time datetime="2017-03-17T15:20:12.000Z" itemprop="datePublished">2017-03-17</time>
+    Updated:<time datetime="2017-03-17T02:28:24.000Z" itemprop="dateModified">2017-03-17</time>
     
   </p>
 </header>
@@ -89,62 +90,54 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#序"><span class="toc-number">1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一笔带过的前期优化"><span class="toc-number">2.</span> <span class="toc-text">一笔带过的前期优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#用户的环境"><span class="toc-number">3.</span> <span class="toc-text">用户的环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#WIFI"><span class="toc-number">3.1.</span> <span class="toc-text">WIFI</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#频段"><span class="toc-number">3.1.1.</span> <span class="toc-text">频段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#位置对性能的影响"><span class="toc-number">3.1.2.</span> <span class="toc-text">位置对性能的影响</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#负载对性能的影响"><span class="toc-number">3.1.3.</span> <span class="toc-text">负载对性能的影响</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#总结"><span class="toc-number">3.1.4.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#事后思考"><span class="toc-number">1.</span> <span class="toc-text">事后思考</span></a></li></ol>
 		</div>
 		
-		<h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>APP的访问速度一直都是大家非常关注的一个点，而近期因为某些原因投入比较多的精力在这上面，所以记录下相关心得。</p>
-<h2 id="一笔带过的前期优化"><a href="#一笔带过的前期优化" class="headerlink" title="一笔带过的前期优化"></a>一笔带过的前期优化</h2><p>刚接需要优化的项目时，APP平时不算非常卡，但是一旦遇到高峰期就卡得无法访问。<br>我们通过修改整体架构，切割并分布各系统，让APP恢复到正常速度的水平。</p>
-<p>恩，这时候问题来了，通过自己使用、基调统计等，发现在同一时间点，有些用户访问快，有些用户访问慢，因而统计了下相关可能影响性能的因素：</p>
+		<p>##引子</p>
+<p>前几日半夜11点多，运维的同事正在处理服务器被cc的事情，然后到了十二点整，报警邮件突然疯狂而至，几乎都是提示codis-proxy无法连接。接着几分钟后客服及运营同事也相继反馈app的功能开始出现不稳定现象。</p>
+<p>##分析过程</p>
+<p>第一时间打开了电脑，虽然刚被攻击，但是感觉此事应该与攻击无关，接着运维同事确认事发时无任何调整。</p>
+<p>紧接着我们的nat网关流量也开始了报警，同时导致服务器访问外网的延迟一度达到2000ms，几乎无法访问。</p>
+<p>打开codis控制台后，确认两前几天就开始的迁移任务依然未跑完(转移64个solt)，同时迁入的那台实例(9号group)的从库华丽丽地标识为down，但是主库是正常的，而迁出的group(1号group)时不时地出现timeout的标识。</p>
+<p>zabbix上确认两台redis的内网带宽未跑满，但是流量有翻倍的上升(这边有个坑，当时另外一个运维同事发出图后，我瞄了一眼就没往脑子里去，和nat的问题重叠了，脑子短路了下，否则应该能更快地确认问题)</p>
+<p>第一时间登录了9号group，从主从断开的现象看猜测是什么东西卡住了导致从库无法跟上主库，继而触发了重传的一个中间态。发现CPU单核占用率100%，这时候redis几乎已经是无法服务了，同时看到一个新现象，出现了redis的rdb进程，结合主库不开rdb的情况，可以判定发生了重传现象，导致主库进行了rdb-save。</p>
+<p>确认了下codis迁移停止后不会对线上业务产生太大的影响，我们先暂停了迁移任务(无法中止，只能暂停)，但是情况并未发生好转。而到这个时候已经问题已经发生了二十分钟，越来越多的人开始反馈异常。而nat网关的异常由于没时间排查，直接将带宽升级了5倍，需要访问外网的业务恢复正常。此时只剩下codis相关的问题未解决。</p>
+<p>接着继续排查redis服务器，发现在/var/log/message中有着这样一段异常，敏感信息已替换。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ip:port: nkeys = 1, onekey = &apos;key&apos;, error = &apos;accept: Resource temporarily unavailable&apos;</div><div class="line">15373:M 15 Mar 00:25:49.285 # slotsmgrt: close target 10.255.152.41:20008</div><div class="line">15373:M 15 Mar 00:25:49.291 # slotsmgrt: connect to target 10.255.152.41:20008</div><div class="line">15373:M 15 Mar 00:25:54.727 # slotsmgrt: migration failed, reading from target</div></pre></td></tr></table></figure>
+<p>从文字描述上来看，好像是迁移过程中group的机器无法连接导致的，但是迁移已经停止了呀。于是连接上redis，进行慢命令的查询，这时候有了个比较大的发现，慢日志中一直有个key的slotsmgrt命令。然后查了一下这个key(zset类型)有百万的数据，这时候就有了头绪了，肯定是迁移及暂停迁移过程中，这个key因为某些原因一直被同步，同时业务人员确认这个key对应的业务已下线，key被删也没有任何事情。因此人工干掉了这个key，过了几秒后，集群恢复了正常。不稳定持续时间接近40分钟，截止3月份本年度最大故障就这样华丽丽地出现了。</p>
+<h3 id="事后思考"><a href="#事后思考" class="headerlink" title="事后思考"></a>事后思考</h3><p>这边遗留下了几个问题：</p>
 <ul>
-<li>用户端的网络影响很大，例如4G、WIFI、3G与2G，有时候真的就是两个世界的感觉</li>
-<li>不同地区的访问速度差别，服务器是挂在北京多线机房里的，总归有些地区访问比较慢</li>
-<li>服务器负载不均导致的部分情况等的相关影响</li>
-<li>首次DNS解析导致的速度慢，因为不同业务节点都有各自的二级域名，因此很多时候DNS缓存都是首次缓存，特别是一些访问率较低的地区，DNS几乎都得递归查询</li>
+<li>是什么导致了在迁移和停止迁移过程中一直触发同步呢</li>
+<li>nat的异常是啥原因</li>
+<li>攻击与此是否有关联</li>
+<li>为啥在12点整出现该问题</li>
 </ul>
-<p>我们做了一些事情来优化相关的项，例如</p>
-<ul>
-<li>不同网络返回不同大小的图片及内容(很早就这样做了)</li>
-<li>采用第三方的图片服务来使用他们的CDN</li>
-<li>换个稳定点的机房 </li>
-<li>通过下发ip:端口列表来做到类似提前解析DNS的方式</li>
-<li>将服务做成可分布的，分布到多台机子上来进行多机多服务负载，以便更加地平均流量</li>
-</ul>
-<p>做完这些事情后，依然在有些情况下卡卡卡卡卡卡……<br>so，就有了下面的一些事情</p>
-<h2 id="用户的环境"><a href="#用户的环境" class="headerlink" title="用户的环境"></a>用户的环境</h2><p>想了想，还是按照整理完的流程来记录比较不容易混乱和前后跳来跳去～<br>首先，我们从用户的环境入手，一般情况下，移动互联网的用户主要访问都是来自于：WIFI、2G、3G、4G（排名不分先后）</p>
-<h3 id="WIFI"><a href="#WIFI" class="headerlink" title="WIFI"></a>WIFI</h3><p>一般说到wifi，很多朋友就会说，wifi肯定速度很快啦，如果有问题肯定是服务端问题…..[泪]<br>应该说我们需要知道一些东东：<br>无线路由器上的网速指的是理想情况下的网速，也就是频段都是它的，噪声是木有的，发射功率最大、位置最优，调制算法最优</p>
-<h4 id="频段"><a href="#频段" class="headerlink" title="频段"></a>频段</h4><p>我们知道wifi一般分为2.4GHz频段和5GHz频段。<br>2.4GHz的频段有三个不重叠的20MHz信道，也就是1、6、11，用无线网络信道检测软件我们可以很容易地看到。<br>经常我们还可以看到附近十几台路由器有三分之一和我们的信道是重叠的，so～这意味着什么呢，要知道信道的带宽是固定的！<br>也就是说，你家的无线路由器其实与重叠的信道共享带宽～，也就是说，隔壁的童鞋用重叠的信道看电影的话，你家的无线路由器的带宽居然会受到影响～～～<br>恩，所以我入了5GHz的路由器～，虽然反射和衍射能力变差了，但是在穿墙能力提升的同时，大多数情况下，还是很不容易产生冲突的。</p>
-<h4 id="位置对性能的影响"><a href="#位置对性能的影响" class="headerlink" title="位置对性能的影响"></a>位置对性能的影响</h4><p>曾经在公司有过这样的画面，同事要秒杀东西了，直接奔到无线路由器旁边，因为信号更好些～～～有道理莫？<br>恩，简单的说，有时候左手换到右手信号都会不一样。。。。。如果一开始速度很慢，换到无线路由器旁边位置其实也是个不错的选择，虽然不一定速度会变快- -</p>
-<h4 id="负载对性能的影响"><a href="#负载对性能的影响" class="headerlink" title="负载对性能的影响"></a>负载对性能的影响</h4><p>有线下使用的机制—冲突检测(Collision Detection)机制：发送方A检测到信道空闲了，发送数据，B也检测到空闲也发了，结果冲突了，在发送过程中就检测到冲突，所以进行指数等待重发<br>wifi下使用的机制—冲突避免(Collision Avoidance)机制：发送方A检测到信道空闲了，发送数据，B也检测到空闲也发了，结果冲突了，等发送完数据帧后接收方都木有确认，所以进行指数等待重发<br>可以看到，wifi下变为发完数据帧才能知道是否冲突了，这种概率访问方式应该说会影响高负载情况下的性能，所以，高负载情况下的无线路由器很容易性能不稳定<br>负载的增长会使得冲突次数上升很快，性能不稳定也是显而易见的。</p>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><ul>
-<li>频段是有限的，随着无线路由器越来越泛滥，信道的冲突已经是必然的了，不过暂时5GHz还是个不错的选择，国家应该也会逐步开放5GHz的更多频段</li>
-<li>无线很容易因为信噪比、位置而导致带宽变化</li>
-<li>冲突避免机制很容易导致非常多的冲突，不过由于wifi的物理层和数据链路层有自己的重发和纠错机制，所以上层无法感知</li>
-<li>wifi会使得首跳延迟无法保证，而使用无线网桥因为多了一跳，延迟时间就更难保证了</li>
-<li>总而言之，在wifi热点多的地方用有线还是对延迟有要求的人的首选～虽然不适用于移动互联网</li>
-</ul>
-<p>wifi相关差不多就是这样子了，结论就是，还真没办法做什么优化，只能说客户端可以根据请求速度来进行图片流视频流大小的选择。</p>
-<p><strong>以上内容仅为经验上的一些整理，如有错误烦请通知下，让我有机会修改下知识误区～</strong></p>
-<p>Authors: xiaoy <a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#111;&#x3a;&#x7a;&#115;&#x31;&#51;&#55;&#57;&#64;&#x71;&#x71;&#x2e;&#x63;&#x6f;&#x6d;">&#x7a;&#115;&#x31;&#51;&#55;&#57;&#64;&#x71;&#x71;&#x2e;&#x63;&#x6f;&#x6d;</a></p>
+<p>之后查询了下codis作者的blog，发现在迁移的过程中，用户的数据访问是直接落到迁移后的redis上的，如果不存在则进行迁移，而如果原始key出现了操作，proxy就会单独对这个key进行一次迁移~~~ 这就解释了为啥会一直产生该同步，而且也解释了内网带宽为啥会突然间飙高(不过9号group一部分带宽是来自于主从同步的)，而大key给redis带来了较大的压力，导致cpu直接被跑满，同时导致主从异常而触发rdb-save。恢复后连夜排查了下大key，然后清理了下一些无用的大key，接着将codis的同步暂停时间缩短了1000倍…趁着半夜把solt的迁移跑完了。迁移有风险，大家还是要谨慎点的。</p>
+<p>而nat的问题查到了凌晨三点依然没有半分头绪，排查完业务是没有那么大带宽的需求的，而出问题的时间点和codis的错误几乎一致，当时判定是一定是有关联的。第二天登录日志系统的时候，突然脑子抽了下，想到了nat的问题会不会是因为日志归集导致的(我们的日志归集用的hadoop集群不在内网，需要通过python脚本分析完通过公网https过去)，而出异常的时候，日志的写入量是非常可怕的。于是登录监控查询了下日志归集带宽的情况，发现在带宽提了五倍后日志写入量飙高了十几倍….因此确认为日志导致的nat异常。这块后面将通过限速来实现占用率的均衡。</p>
+<p>而攻击是否有关联的问题以及时间为啥刚好在12点，最后的结论是。。。。他喵喵的真的都是巧合！！！完全没有任何关联。。。尴尬</p>
+<p>后遗症是搁浅了大半年的源码阅读计划再次提上日程。。。</p>
+<p>以上为个人基于当前知识体系做出的判断，如果有哪里是错误的，请不吝赐教</p>
+<p>Authors: xiaoy <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#x7a;&#x73;&#x31;&#51;&#55;&#57;&#x40;&#113;&#113;&#46;&#99;&#111;&#x6d;">&#x7a;&#x73;&#x31;&#51;&#55;&#57;&#x40;&#113;&#113;&#46;&#99;&#111;&#x6d;</a></p>
   
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/性能/">性能</a>
+  <span></span> <a href="/tags/网络/">网络</a>
   </div>
 
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/性能/">性能</a>
+  <a class="article-category-link" href="/categories/问题记录/">问题记录</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="http://www.xiaoy.name/2015/04/10/移动互联网相关性能-1/" data-title="移动互联网相关性能(1) | Xy-Home" data-tsina="1188724621" class="share clearfix">
+  <div data-url="http://www.xiaoy.name/2017/03/17/err-of-the-codis-solt-migrate/" data-title="codis迁移solt时的一个微坑 | Xy-Home" data-tsina="1188724621" class="share clearfix">
   </div>
 
 </div>
@@ -153,14 +146,14 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2015/04/11/移动互联网相关性能-2/" title="移动互联网相关性能(2)">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  移动互联网相关性能(2)</span>
+
+<div class="next">
+<a href="/2016/09/10/20160910/"  title="关于帧前八字节的疑惑">
+ <strong>NEXT:</strong><br/> 
+ <span>关于帧前八字节的疑惑
+</span>
 </a>
 </div>
-
 
 </nav>
 
@@ -174,7 +167,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#序"><span class="toc-number">1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一笔带过的前期优化"><span class="toc-number">2.</span> <span class="toc-text">一笔带过的前期优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#用户的环境"><span class="toc-number">3.</span> <span class="toc-text">用户的环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#WIFI"><span class="toc-number">3.1.</span> <span class="toc-text">WIFI</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#频段"><span class="toc-number">3.1.1.</span> <span class="toc-text">频段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#位置对性能的影响"><span class="toc-number">3.1.2.</span> <span class="toc-text">位置对性能的影响</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#负载对性能的影响"><span class="toc-number">3.1.3.</span> <span class="toc-text">负载对性能的影响</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#总结"><span class="toc-number">3.1.4.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#事后思考"><span class="toc-number">1.</span> <span class="toc-text">事后思考</span></a></li></ol>
   </div>
 
 <div id="asidepart">
