@@ -9,10 +9,8 @@
     
     <meta name="author" content="xiaoy">
     
-    <meta name="description" content="##引子
-前几日半夜11点多，运维的同事正在处理服务器被cc的事情，然后到了十二点整，报警邮件突然疯狂而至，几乎都是提示codis-proxy无法连接。接着几分钟后客服及运营同事也相继反馈app的功能开始出现不稳定现象。
-##分析过程
-第一时间打开了电脑，虽然刚被攻击，但是感觉此事应该与攻击无关，接">
+    <meta name="description" content="引子前几日半夜11点多，运维的同事正在处理服务器被cc的事情，然后到了十二点整，报警邮件突然疯狂而至，几乎都是提示codis-proxy无法连接。接着几分钟后客服及运营同事也相继反馈app的功能开始出现不稳定现象。
+分析过程第一时间打开了电脑，虽然刚被攻击，但是感觉此事应该与攻击无关，接着运维同事确">
     
     
     
@@ -80,7 +78,7 @@
     </p>
   <p class="article-time">
     <time datetime="2017-03-17T15:20:12.000Z" itemprop="datePublished">2017-03-17</time>
-    Updated:<time datetime="2017-03-17T02:28:24.000Z" itemprop="dateModified">2017-03-17</time>
+    Updated:<time datetime="2017-03-17T02:34:47.000Z" itemprop="dateModified">2017-03-17</time>
     
   </p>
 </header>
@@ -90,13 +88,11 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
-		<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#事后思考"><span class="toc-number">1.</span> <span class="toc-text">事后思考</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#引子"><span class="toc-number">1.</span> <span class="toc-text">引子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分析过程"><span class="toc-number">2.</span> <span class="toc-text">分析过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#事后思考"><span class="toc-number">3.</span> <span class="toc-text">事后思考</span></a></li></ol>
 		</div>
 		
-		<p>##引子</p>
-<p>前几日半夜11点多，运维的同事正在处理服务器被cc的事情，然后到了十二点整，报警邮件突然疯狂而至，几乎都是提示codis-proxy无法连接。接着几分钟后客服及运营同事也相继反馈app的功能开始出现不稳定现象。</p>
-<p>##分析过程</p>
-<p>第一时间打开了电脑，虽然刚被攻击，但是感觉此事应该与攻击无关，接着运维同事确认事发时无任何调整。</p>
+		<h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>前几日半夜11点多，运维的同事正在处理服务器被cc的事情，然后到了十二点整，报警邮件突然疯狂而至，几乎都是提示codis-proxy无法连接。接着几分钟后客服及运营同事也相继反馈app的功能开始出现不稳定现象。</p>
+<h2 id="分析过程"><a href="#分析过程" class="headerlink" title="分析过程"></a>分析过程</h2><p>第一时间打开了电脑，虽然刚被攻击，但是感觉此事应该与攻击无关，接着运维同事确认事发时无任何调整。</p>
 <p>紧接着我们的nat网关流量也开始了报警，同时导致服务器访问外网的延迟一度达到2000ms，几乎无法访问。</p>
 <p>打开codis控制台后，确认两前几天就开始的迁移任务依然未跑完(转移64个solt)，同时迁入的那台实例(9号group)的从库华丽丽地标识为down，但是主库是正常的，而迁出的group(1号group)时不时地出现timeout的标识。</p>
 <p>zabbix上确认两台redis的内网带宽未跑满，但是流量有翻倍的上升(这边有个坑，当时另外一个运维同事发出图后，我瞄了一眼就没往脑子里去，和nat的问题重叠了，脑子短路了下，否则应该能更快地确认问题)</p>
@@ -105,7 +101,7 @@
 <p>接着继续排查redis服务器，发现在/var/log/message中有着这样一段异常，敏感信息已替换。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ip:port: nkeys = 1, onekey = &apos;key&apos;, error = &apos;accept: Resource temporarily unavailable&apos;</div><div class="line">15373:M 15 Mar 00:25:49.285 # slotsmgrt: close target 10.255.152.41:20008</div><div class="line">15373:M 15 Mar 00:25:49.291 # slotsmgrt: connect to target 10.255.152.41:20008</div><div class="line">15373:M 15 Mar 00:25:54.727 # slotsmgrt: migration failed, reading from target</div></pre></td></tr></table></figure>
 <p>从文字描述上来看，好像是迁移过程中group的机器无法连接导致的，但是迁移已经停止了呀。于是连接上redis，进行慢命令的查询，这时候有了个比较大的发现，慢日志中一直有个key的slotsmgrt命令。然后查了一下这个key(zset类型)有百万的数据，这时候就有了头绪了，肯定是迁移及暂停迁移过程中，这个key因为某些原因一直被同步，同时业务人员确认这个key对应的业务已下线，key被删也没有任何事情。因此人工干掉了这个key，过了几秒后，集群恢复了正常。不稳定持续时间接近40分钟，截止3月份本年度最大故障就这样华丽丽地出现了。</p>
-<h3 id="事后思考"><a href="#事后思考" class="headerlink" title="事后思考"></a>事后思考</h3><p>这边遗留下了几个问题：</p>
+<h2 id="事后思考"><a href="#事后思考" class="headerlink" title="事后思考"></a>事后思考</h2><p>这边遗留下了几个问题：</p>
 <ul>
 <li>是什么导致了在迁移和停止迁移过程中一直触发同步呢</li>
 <li>nat的异常是啥原因</li>
@@ -117,7 +113,7 @@
 <p>而攻击是否有关联的问题以及时间为啥刚好在12点，最后的结论是。。。。他喵喵的真的都是巧合！！！完全没有任何关联。。。尴尬</p>
 <p>后遗症是搁浅了大半年的源码阅读计划再次提上日程。。。</p>
 <p>以上为个人基于当前知识体系做出的判断，如果有哪里是错误的，请不吝赐教</p>
-<p>Authors: xiaoy <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#x7a;&#x73;&#x31;&#51;&#55;&#57;&#x40;&#113;&#113;&#46;&#99;&#111;&#x6d;">&#x7a;&#x73;&#x31;&#51;&#55;&#57;&#x40;&#113;&#113;&#46;&#99;&#111;&#x6d;</a></p>
+<p>Authors: xiaoy <a href="&#109;&#x61;&#105;&#108;&#x74;&#x6f;&#x3a;&#x7a;&#115;&#49;&#x33;&#x37;&#x39;&#x40;&#x71;&#113;&#46;&#x63;&#x6f;&#x6d;">&#x7a;&#115;&#49;&#x33;&#x37;&#x39;&#x40;&#x71;&#113;&#46;&#x63;&#x6f;&#x6d;</a></p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -167,7 +163,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
-  <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#事后思考"><span class="toc-number">1.</span> <span class="toc-text">事后思考</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#引子"><span class="toc-number">1.</span> <span class="toc-text">引子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分析过程"><span class="toc-number">2.</span> <span class="toc-text">分析过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#事后思考"><span class="toc-number">3.</span> <span class="toc-text">事后思考</span></a></li></ol>
   </div>
 
 <div id="asidepart">
