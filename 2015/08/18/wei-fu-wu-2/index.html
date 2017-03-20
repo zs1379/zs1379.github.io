@@ -9,10 +9,8 @@
     
     <meta name="author" content="xiaoy">
     
-    <meta name="description" content="##贰##
-###预研###
-自从争取到了开发时间，马上就进入旧系统的整理阶段，一个个功能整理出来后，各种互相关联的缠绕着的关系让我一度感觉世界是如此阴暗，因为就如同重构一般，你已经很难知道系统的原始需求了，你能看到的只是如今表现出来的形式。
-在消耗了几天的时间后，总算从最底层的商品开始将整个系统的">
+    <meta name="description" content="贰预研自从争取到了开发时间，马上就进入旧系统的整理阶段，一个个功能整理出来后，各种互相关联的缠绕着的关系让我一度感觉世界是如此阴暗，因为就如同重构一般，你已经很难知道系统的原始需求了，你能看到的只是如今表现出来的形式。
+在消耗了几天的时间后，总算从最底层的商品开始将整个系统的大体结构分析了一遍过去，">
     
     
     
@@ -80,7 +78,7 @@
     </p>
   <p class="article-time">
     <time datetime="2015-08-18T14:36:40.000Z" itemprop="datePublished">2015-08-18</time>
-    Updated:<time datetime="2015-08-25T14:23:45.000Z" itemprop="dateModified">2015-08-25</time>
+    Updated:<time datetime="2017-03-17T06:40:44.000Z" itemprop="dateModified">2017-03-17</time>
     
   </p>
 </header>
@@ -90,23 +88,19 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
-		
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#贰"><span class="toc-number">1.</span> <span class="toc-text">贰</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#预研"><span class="toc-number">1.1.</span> <span class="toc-text">预研</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#选型"><span class="toc-number">1.2.</span> <span class="toc-text">选型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#耦合"><span class="toc-number">1.3.</span> <span class="toc-text">耦合</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#优势"><span class="toc-number">1.4.</span> <span class="toc-text">优势</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#叁"><span class="toc-number">2.</span> <span class="toc-text">叁</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#经验总结"><span class="toc-number">2.1.</span> <span class="toc-text">经验总结</span></a></li></ol></li></ol>
 		</div>
 		
-		<p>##贰##</p>
-<p>###预研###</p>
-<p>自从争取到了开发时间，马上就进入旧系统的整理阶段，一个个功能整理出来后，各种互相关联的缠绕着的关系让我一度感觉世界是如此阴暗，因为就如同重构一般，你已经很难知道系统的原始需求了，你能看到的只是如今表现出来的形式。</p>
+		<h2 id="贰"><a href="#贰" class="headerlink" title="贰"></a>贰</h2><h3 id="预研"><a href="#预研" class="headerlink" title="预研"></a>预研</h3><p>自从争取到了开发时间，马上就进入旧系统的整理阶段，一个个功能整理出来后，各种互相关联的缠绕着的关系让我一度感觉世界是如此阴暗，因为就如同重构一般，你已经很难知道系统的原始需求了，你能看到的只是如今表现出来的形式。</p>
 <p>在消耗了几天的时间后，总算从最底层的商品开始将整个系统的大体结构分析了一遍过去，各种功能画满了近8米的白板。整理出来的需求终于是一个水平的调用关系，拆分成了三个大系统以及几个辅助系统及中间件。</p>
 <p>回忆当时的情况的话，除了时间很赶是一个很大的问题外，剩下的问题就是太大的不确定性，毕竟动作如此的大，并且框架里的soa服务从未在线上服务跑过，页不知道会不会存在什么坑（事实证明确实有坑，一开始服务的soa调用超时时间设置为2秒，然后没有进行重试的逻辑，导致跨机房调用失败率非常高）。</p>
-<p>###选型###</p>
-<p>其实也不能说是选型，因为没有多少选择，我们采用微服务的方式不是代理端聚合多个服务提供方的形式，而是采用链式调用与异步消息传递微服务。</p>
+<h3 id="选型"><a href="#选型" class="headerlink" title="选型"></a>选型</h3><p>其实也不能说是选型，因为没有多少选择，我们采用微服务的方式不是代理端聚合多个服务提供方的形式，而是采用链式调用与异步消息传递微服务。</p>
 <ul>
 <li>客户端聚合：服务之间不会互相进行调用，而是统一由代理端进行调用后聚合，实际中采用得比较多，但是我们因为服务粒度方面的原因不采用</li>
 <li>链式调用：服务之间会长生相互调用，也就是一个请求可能产生多个系统之间链式的soa调用，这种对sla要求较高，因为第一个系统的调用超时时间是之后所有调用的总和</li>
 <li>异步消息传递：服务调用可能产生各种异步的调用，通过统一的消息队列进行分发，采用这个是为了避免同步产生的阻塞问题</li>
 </ul>
-<p>###耦合###</p>
-<p>实际上动得最大块的就是这里了，一开始的系统的耦合实在时很让人头疼，改动导致的回归bug也难以避免。</p>
+<h3 id="耦合"><a href="#耦合" class="headerlink" title="耦合"></a>耦合</h3><p>实际上动得最大块的就是这里了，一开始的系统的耦合实在时很让人头疼，改动导致的回归bug也难以避免。</p>
 <p>服务的消费者不再依赖于某一个特定的实现，仅通过某个约定进行调用，这时候内部的修改不再会影响消费者，而且消费者可以很方便地切换到其他的服务提供方。</p>
 <p>而只要拆分了耦合，这时候不管是从部署还是从异步和兼容上讲都是有优势的。</p>
 <ul>
@@ -115,17 +109,14 @@
 <li>兼容：由于服务调用是通过某种约定，于是升级接口的同时保持向下兼容变得很容易，只需要加一个版本号进行控制就行了。</li>
 <li>测试：从人工回归上而言没有什么差别，但是从自动化测试上而言，完全可以做到进行服务的测试，而无需关心消费者</li>
 </ul>
-<p>###优势###</p>
-<p>除了之前说到的那些个优势之外，其实还有一些理由:</p>
+<h3 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h3><p>除了之前说到的那些个优势之外，其实还有一些理由:</p>
 <ul>
 <li>通过协议的隔离，我们完全可以采用不同的语言进行微服务的实现，或者更新框架，这个大大降低了重构的风险，可以做到快速的发现问题，再决定是大规模应用还是废弃，类似于灰度发布</li>
 <li>团队的招聘，如今技术人员越来越难招，而且流动性还是有的，系统大了后的熟悉时间太长了，并且限死了框架与语言，人员就更难招聘了，通过微服务完全可以招聘不同语言的团队，熟悉不同框架的人</li>
 <li>问题的隔离，所有问题产生都只会影响到调用者，而不会对整个系统造成影响，并且通过给问题的传递打上标示符，很容易找出问题的来源，小系统也更容易地定位及修复问题</li>
 <li>持续交付能力的提升，之前提到的部署、测试、兼容等其实都是为了这个服务的，没有快速交付就没有意义</li>
 </ul>
-<p>##叁##</p>
-<p>###经验总结###</p>
-<ul>
+<h2 id="叁"><a href="#叁" class="headerlink" title="叁"></a>叁</h2><h3 id="经验总结"><a href="#经验总结" class="headerlink" title="经验总结"></a>经验总结</h3><ul>
 <li>服务尽量细，然后采用组合的方式来形成大一点的服务，如果需要再继续组合，从而提供一个大服务</li>
 <li>适当减少soa请求次数，例如需要请求多个用户信息，那就提供一个批量查询的服务，而不是调用多次</li>
 <li>一定要保证日志的可跟踪性，例如我们的每一次请求在不同系统之间传递都会带上同一个唯一请求头</li>
@@ -136,7 +127,7 @@
 </ul>
 <hr>
 <p><strong>以上内容仅为经验上的一些整理，如有错误烦请通知下，让我有机会修改下知识误区～</strong></p>
-<p>Authors: xiaoy <a href="&#109;&#97;&#x69;&#108;&#116;&#111;&#x3a;&#x7a;&#x73;&#x31;&#51;&#55;&#x39;&#64;&#113;&#x71;&#x2e;&#99;&#x6f;&#x6d;">&#x7a;&#x73;&#x31;&#51;&#55;&#x39;&#64;&#113;&#x71;&#x2e;&#99;&#x6f;&#x6d;</a></p>
+<p>Authors: xiaoy <a href="&#x6d;&#x61;&#105;&#108;&#x74;&#x6f;&#58;&#122;&#115;&#49;&#51;&#x37;&#57;&#64;&#x71;&#113;&#x2e;&#x63;&#x6f;&#x6d;">&#122;&#115;&#49;&#51;&#x37;&#57;&#64;&#x71;&#113;&#x2e;&#x63;&#x6f;&#x6d;</a></p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -194,7 +185,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
-  
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#贰"><span class="toc-number">1.</span> <span class="toc-text">贰</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#预研"><span class="toc-number">1.1.</span> <span class="toc-text">预研</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#选型"><span class="toc-number">1.2.</span> <span class="toc-text">选型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#耦合"><span class="toc-number">1.3.</span> <span class="toc-text">耦合</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#优势"><span class="toc-number">1.4.</span> <span class="toc-text">优势</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#叁"><span class="toc-number">2.</span> <span class="toc-text">叁</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#经验总结"><span class="toc-number">2.1.</span> <span class="toc-text">经验总结</span></a></li></ol></li></ol>
   </div>
 
 <div id="asidepart">

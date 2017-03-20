@@ -9,8 +9,8 @@
     
     <meta name="author" content="xiaoy">
     
-    <meta name="description" content="##缘由大好的周六下午，朋友给的一个交换机的资料，让我对之前一些东西产生了疑问，理了几个小时资料，终于理顺了下思路，顺便记录一些过程。
-朋友的公司的交换机比较神奇，是属于直通转发式的，按照资料上看也就是说只读取帧的前14个字节，按照我之前的理解，我认为是读取了目的MAC、源MAC、以及类型。但是我疑">
+    <meta name="description" content="缘由大好的周六下午，朋友给的一个交换机的资料，让我对之前一些东西产生了疑问，理了几个小时资料，终于理顺了下思路，顺便记录一些过程。
+朋友的公司的交换机比较神奇，是属于直通转发式的，按照资料上看也就是说只读取帧的前14个字节，按照我之前的理解，我认为是读取了目的MAC、源MAC、以及类型。但是我疑惑的">
     
     
     
@@ -78,7 +78,7 @@
     </p>
   <p class="article-time">
     <time datetime="2016-09-10T15:42:24.000Z" itemprop="datePublished">2016-09-10</time>
-    Updated:<time datetime="2016-09-11T08:40:01.000Z" itemprop="dateModified">2016-09-11</time>
+    Updated:<time datetime="2017-03-17T06:35:31.000Z" itemprop="dateModified">2017-03-17</time>
     
   </p>
 </header>
@@ -88,14 +88,13 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
-		
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#缘由"><span class="toc-number">1.</span> <span class="toc-text">缘由</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#one"><span class="toc-number">2.</span> <span class="toc-text">one</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#two"><span class="toc-number">3.</span> <span class="toc-text">two</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#three"><span class="toc-number">4.</span> <span class="toc-text">three</span></a></li></ol>
 		</div>
 		
-		<p>##缘由<br>大好的周六下午，朋友给的一个交换机的资料，让我对之前一些东西产生了疑问，理了几个小时资料，终于理顺了下思路，顺便记录一些过程。</p>
+		<h2 id="缘由"><a href="#缘由" class="headerlink" title="缘由"></a>缘由</h2><p>大好的周六下午，朋友给的一个交换机的资料，让我对之前一些东西产生了疑问，理了几个小时资料，终于理顺了下思路，顺便记录一些过程。</p>
 <p>朋友的公司的交换机比较神奇，是属于直通转发式的，按照资料上看也就是说只读取帧的前14个字节，按照我之前的理解，我认为是读取了目的MAC、源MAC、以及类型。但是我疑惑的是既然是直通式的，那为什么需要去读取源MAC和类型，很难想通。暴露出基础不扎实了- -</p>
 <p>在翻阅了相关资料后，发现所谓的14个字节指的是Preamble+目的MAC，也就是说在我熟知的1518字节外，最前端还有一个前导的8字节，一开始我以为是之前看TCP/IP详解时漏掉了，但是翻了下依然没看到，这就有点神奇了。</p>
-<p>##one</p>
-<p>查询资料后，发现了一些之前所没去注意的东东：<br>首先，我所熟知的网络是Ethernet2的封装格式【RFC894】，应该也可以算上最使用的，如下表：</p>
+<h2 id="one"><a href="#one" class="headerlink" title="one"></a>one</h2><p>查询资料后，发现了一些之前所没去注意的东东：<br>首先，我所熟知的网络是Ethernet2的封装格式【RFC894】，应该也可以算上最使用的，如下表：</p>
 <table>
 <thead>
 <tr>
@@ -166,8 +165,7 @@
 </table>
 <p>在这边DSAP+SSAP+cntl这三个字节属于802.2的LLC，而org code及类型这五个字节属于802.2的SNAP（子网接入协议）。</p>
 <p>顺便带一句，经常有童鞋问起为啥子MTU有时候是1500，有时候是1492，原因就在上面。</p>
-<p>##two</p>
-<p>而如果按照Ethernet2的封装格式，按照资料上的描述，在最前端还有8个字节，那就变成如下表了：</p>
+<h2 id="two"><a href="#two" class="headerlink" title="two"></a>two</h2><p>而如果按照Ethernet2的封装格式，按照资料上的描述，在最前端还有8个字节，那就变成如下表了：</p>
 <table>
 <thead>
 <tr>
@@ -193,7 +191,7 @@
 <p>但是不知道为何，除了【RFC1242】外，我并未在ietf上发现关于Preamble的解释，不过在思科的书上发现了以下的一些东东。</p>
 <p>在Ethernet2中，它属于导前码，用于标示数据帧是否合法。不过我感觉它更倾向于是一种信令，而不是数据帧，这块如果看到的童鞋有资料也麻烦说一下下。</p>
 <p>而在802.3中，它被分为了前7个字节的导前码和1个字节的帧起始定界符，也就是所谓的SFD，SFD用于标示下一个字节为MAC，同时标明该帧是属于Ethernet2还是802.3的数据帧。</p>
-<p>##three<br>有点吐槽的欲望，翻阅资料其实还是很浪费时间，特别是RFC文档，手头上当时留的一份2012年的RFC-pdf版也已经落伍了，现在只能在ietf上查询，而即将破8k的RFC文档再也不像以前那么好翻阅了。。。。。<br>凌晨2点，记录完毕准备睡觉咯</p>
+<h2 id="three"><a href="#three" class="headerlink" title="three"></a>three</h2><p>有点吐槽的欲望，翻阅资料其实还是很浪费时间，特别是RFC文档，手头上当时留的一份2012年的RFC-pdf版也已经落伍了，现在只能在ietf上查询，而即将破8k的RFC文档再也不像以前那么好翻阅了。。。。。<br>凌晨2点，记录完毕准备睡觉咯</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -251,7 +249,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
-  
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#缘由"><span class="toc-number">1.</span> <span class="toc-text">缘由</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#one"><span class="toc-number">2.</span> <span class="toc-text">one</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#two"><span class="toc-number">3.</span> <span class="toc-text">two</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#three"><span class="toc-number">4.</span> <span class="toc-text">three</span></a></li></ol>
   </div>
 
 <div id="asidepart">
