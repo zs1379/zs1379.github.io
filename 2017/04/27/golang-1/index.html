@@ -4,14 +4,13 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>移动互联网相关性能(1) | Xy-Home</title>
+    <title>golang好玩的语法细节(1) | Xy-Home</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="xiaoy">
     
-    <meta name="description" content="序APP的访问速度一直都是大家非常关注的一个点，而近期因为某些原因投入比较多的精力在这上面，所以记录下相关心得。
-一笔带过的前期优化刚接需要优化的项目时，APP平时不算非常卡，但是一旦遇到高峰期就卡得无法访问。我们通过修改整体架构，切割并分布各系统，让APP恢复到正常速度的水平。
-恩，这时候问题来了">
+    <meta name="description" content="flag不带arg的bool如果声明了某一个bool类型的参数，例如-n，不传值的情况下用的是声明的默认值，但是如果是声明了该参数(例如n)，但是后面不带值的话(即不写n=true或者n true)，则会被设置为true。但是如果是int型或者其他的类型，则会退出提示请输入参数。
+这个定义在flag">
     
     
     
@@ -71,15 +70,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/04/10/移动互联网相关性能-1/" title="移动互联网相关性能(1)" itemprop="url">移动互联网相关性能(1)</a>
+      <a href="/2017/04/27/golang-1/" title="golang好玩的语法细节(1)" itemprop="url">golang好玩的语法细节(1)</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://www.xiaoy.name" title="xiaoy">xiaoy</a>
     </p>
   <p class="article-time">
-    <time datetime="2015-04-10T11:04:01.000Z" itemprop="datePublished">2015-04-10</time>
-    更新日期:<time datetime="2015-04-13T12:42:47.000Z" itemprop="dateModified">2015-04-13</time>
+    <time datetime="2017-04-27T07:36:10.000Z" itemprop="datePublished">2017-04-27</time>
+    更新日期:<time datetime="2017-04-27T07:38:35.000Z" itemprop="dateModified">2017-04-27</time>
     
   </p>
 </header>
@@ -89,62 +88,36 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#序"><span class="toc-number">1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一笔带过的前期优化"><span class="toc-number">2.</span> <span class="toc-text">一笔带过的前期优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#用户的环境"><span class="toc-number">3.</span> <span class="toc-text">用户的环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#WIFI"><span class="toc-number">3.1.</span> <span class="toc-text">WIFI</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#频段"><span class="toc-number">3.1.1.</span> <span class="toc-text">频段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#位置对性能的影响"><span class="toc-number">3.1.2.</span> <span class="toc-text">位置对性能的影响</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#负载对性能的影响"><span class="toc-number">3.1.3.</span> <span class="toc-text">负载对性能的影响</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#总结"><span class="toc-number">3.1.4.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#flag"><span class="toc-number">1.</span> <span class="toc-text">flag</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#不带arg的bool"><span class="toc-number">1.1.</span> <span class="toc-text">不带arg的bool</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#打印flag的默认值"><span class="toc-number">1.2.</span> <span class="toc-text">打印flag的默认值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FlagSet的复用"><span class="toc-number">1.3.</span> <span class="toc-text">FlagSet的复用</span></a></li></ol></li></ol>
 		</div>
 		
-		<h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>APP的访问速度一直都是大家非常关注的一个点，而近期因为某些原因投入比较多的精力在这上面，所以记录下相关心得。</p>
-<h2 id="一笔带过的前期优化"><a href="#一笔带过的前期优化" class="headerlink" title="一笔带过的前期优化"></a>一笔带过的前期优化</h2><p>刚接需要优化的项目时，APP平时不算非常卡，但是一旦遇到高峰期就卡得无法访问。<br>我们通过修改整体架构，切割并分布各系统，让APP恢复到正常速度的水平。</p>
-<p>恩，这时候问题来了，通过自己使用、基调统计等，发现在同一时间点，有些用户访问快，有些用户访问慢，因而统计了下相关可能影响性能的因素：</p>
-<ul>
-<li>用户端的网络影响很大，例如4G、WIFI、3G与2G，有时候真的就是两个世界的感觉</li>
-<li>不同地区的访问速度差别，服务器是挂在北京多线机房里的，总归有些地区访问比较慢</li>
-<li>服务器负载不均导致的部分情况等的相关影响</li>
-<li>首次DNS解析导致的速度慢，因为不同业务节点都有各自的二级域名，因此很多时候DNS缓存都是首次缓存，特别是一些访问率较低的地区，DNS几乎都得递归查询</li>
-</ul>
-<p>我们做了一些事情来优化相关的项，例如</p>
-<ul>
-<li>不同网络返回不同大小的图片及内容(很早就这样做了)</li>
-<li>采用第三方的图片服务来使用他们的CDN</li>
-<li>换个稳定点的机房 </li>
-<li>通过下发ip:端口列表来做到类似提前解析DNS的方式</li>
-<li>将服务做成可分布的，分布到多台机子上来进行多机多服务负载，以便更加地平均流量</li>
-</ul>
-<p>做完这些事情后，依然在有些情况下卡卡卡卡卡卡……<br>so，就有了下面的一些事情</p>
-<h2 id="用户的环境"><a href="#用户的环境" class="headerlink" title="用户的环境"></a>用户的环境</h2><p>想了想，还是按照整理完的流程来记录比较不容易混乱和前后跳来跳去～<br>首先，我们从用户的环境入手，一般情况下，移动互联网的用户主要访问都是来自于：WIFI、2G、3G、4G（排名不分先后）</p>
-<h3 id="WIFI"><a href="#WIFI" class="headerlink" title="WIFI"></a>WIFI</h3><p>一般说到wifi，很多朋友就会说，wifi肯定速度很快啦，如果有问题肯定是服务端问题…..[泪]<br>应该说我们需要知道一些东东：<br>无线路由器上的网速指的是理想情况下的网速，也就是频段都是它的，噪声是木有的，发射功率最大、位置最优，调制算法最优</p>
-<h4 id="频段"><a href="#频段" class="headerlink" title="频段"></a>频段</h4><p>我们知道wifi一般分为2.4GHz频段和5GHz频段。<br>2.4GHz的频段有三个不重叠的20MHz信道，也就是1、6、11，用无线网络信道检测软件我们可以很容易地看到。<br>经常我们还可以看到附近十几台路由器有三分之一和我们的信道是重叠的，so～这意味着什么呢，要知道信道的带宽是固定的！<br>也就是说，你家的无线路由器其实与重叠的信道共享带宽～，也就是说，隔壁的童鞋用重叠的信道看电影的话，你家的无线路由器的带宽居然会受到影响～～～<br>恩，所以我入了5GHz的路由器～，虽然反射和衍射能力变差了，但是在穿墙能力提升的同时，大多数情况下，还是很不容易产生冲突的。</p>
-<h4 id="位置对性能的影响"><a href="#位置对性能的影响" class="headerlink" title="位置对性能的影响"></a>位置对性能的影响</h4><p>曾经在公司有过这样的画面，同事要秒杀东西了，直接奔到无线路由器旁边，因为信号更好些～～～有道理莫？<br>恩，简单的说，有时候左手换到右手信号都会不一样。。。。。如果一开始速度很慢，换到无线路由器旁边位置其实也是个不错的选择，虽然不一定速度会变快- -</p>
-<h4 id="负载对性能的影响"><a href="#负载对性能的影响" class="headerlink" title="负载对性能的影响"></a>负载对性能的影响</h4><p>有线下使用的机制—冲突检测(Collision Detection)机制：发送方A检测到信道空闲了，发送数据，B也检测到空闲也发了，结果冲突了，在发送过程中就检测到冲突，所以进行指数等待重发<br>wifi下使用的机制—冲突避免(Collision Avoidance)机制：发送方A检测到信道空闲了，发送数据，B也检测到空闲也发了，结果冲突了，等发送完数据帧后接收方都木有确认，所以进行指数等待重发<br>可以看到，wifi下变为发完数据帧才能知道是否冲突了，这种概率访问方式应该说会影响高负载情况下的性能，所以，高负载情况下的无线路由器很容易性能不稳定<br>负载的增长会使得冲突次数上升很快，性能不稳定也是显而易见的。</p>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><ul>
-<li>频段是有限的，随着无线路由器越来越泛滥，信道的冲突已经是必然的了，不过暂时5GHz还是个不错的选择，国家应该也会逐步开放5GHz的更多频段</li>
-<li>无线很容易因为信噪比、位置而导致带宽变化</li>
-<li>冲突避免机制很容易导致非常多的冲突，不过由于wifi的物理层和数据链路层有自己的重发和纠错机制，所以上层无法感知</li>
-<li>wifi会使得首跳延迟无法保证，而使用无线网桥因为多了一跳，延迟时间就更难保证了</li>
-<li>总而言之，在wifi热点多的地方用有线还是对延迟有要求的人的首选～虽然不适用于移动互联网</li>
-</ul>
-<p>wifi相关差不多就是这样子了，结论就是，还真没办法做什么优化，只能说客户端可以根据请求速度来进行图片流视频流大小的选择。</p>
-<p><strong>以上内容仅为经验上的一些整理，如有错误烦请通知下，让我有机会修改下知识误区～</strong></p>
-<p>Authors: xiaoy <a href="&#109;&#x61;&#x69;&#x6c;&#116;&#x6f;&#58;&#122;&#115;&#x31;&#x33;&#x37;&#x39;&#64;&#113;&#x71;&#x2e;&#x63;&#111;&#109;">&#122;&#115;&#x31;&#x33;&#x37;&#x39;&#64;&#113;&#x71;&#x2e;&#x63;&#111;&#109;</a></p>
+		<h2 id="flag"><a href="#flag" class="headerlink" title="flag"></a>flag</h2><h3 id="不带arg的bool"><a href="#不带arg的bool" class="headerlink" title="不带arg的bool"></a>不带arg的bool</h3><p>如果声明了某一个bool类型的参数，例如-n，不传值的情况下用的是声明的默认值，但是如果是声明了该参数(例如n)，但是后面不带值的话(即不写n=true或者n true)，则会被设置为true。但是如果是int型或者其他的类型，则会退出提示请输入参数。</p>
+<p>这个定义在flag的源码parseOne中，对bool做了特殊处理，注释中写了’// special case: doesn’t need an arg’</p>
+<h3 id="打印flag的默认值"><a href="#打印flag的默认值" class="headerlink" title="打印flag的默认值"></a>打印flag的默认值</h3><p>在PrintDefaults的输出，一般我们都可以看到名称、类型、解释、内容，例如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">-name int    </div><div class="line">please enter name (default 1)</div></pre></td></tr></table></figure></p>
+<p>但是如果为bool型，并且默认值为false，会发现类型和默认值都不见了~ 如果为int型，则默认值不见了。</p>
+<p>这个是由于false、空字符串、0值都不会打印默认值，因此默认值会消失。</p>
+<p>而bool的类型，在注释中可以找到原因，Boolean flags of one ASCII letter are so common we treat them specially, putting their usage on the same line.</p>
+<h3 id="FlagSet的复用"><a href="#FlagSet的复用" class="headerlink" title="FlagSet的复用"></a>FlagSet的复用</h3><p>看文档会发现FlagSet的方法以及没使用FlagSet的方法是对应的，实际上没带的时候FlagSet就是默认为ExitOnError的FlagSet而已。但是在源码中，代码却是完全拷贝的一份，不知道为啥这样子实现~</p>
   
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/性能/">性能</a>
+  <span></span> <a href="/tags/golang/">golang</a>
   </div>
 
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/性能/">性能</a>
+  <a class="article-category-link" href="/categories/golang/">golang</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="http://www.xiaoy.name/2015/04/10/移动互联网相关性能-1/" data-title="移动互联网相关性能(1) | Xy-Home" data-tsina="1188724621" class="share clearfix">
+  <div data-url="http://www.xiaoy.name/2017/04/27/golang-1/" data-title="golang好玩的语法细节(1) | Xy-Home" data-tsina="1188724621" class="share clearfix">
   </div>
 
 </div>
@@ -153,14 +126,14 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2015/04/11/移动互联网相关性能-2/" title="移动互联网相关性能(2)">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  移动互联网相关性能(2)</span>
+
+<div class="next">
+<a href="/2017/03/25/20170325/"  title="即将而立之年的反思">
+ <strong>NEXT:</strong><br/> 
+ <span>即将而立之年的反思
+</span>
 </a>
 </div>
-
 
 </nav>
 
@@ -174,7 +147,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#序"><span class="toc-number">1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一笔带过的前期优化"><span class="toc-number">2.</span> <span class="toc-text">一笔带过的前期优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#用户的环境"><span class="toc-number">3.</span> <span class="toc-text">用户的环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#WIFI"><span class="toc-number">3.1.</span> <span class="toc-text">WIFI</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#频段"><span class="toc-number">3.1.1.</span> <span class="toc-text">频段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#位置对性能的影响"><span class="toc-number">3.1.2.</span> <span class="toc-text">位置对性能的影响</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#负载对性能的影响"><span class="toc-number">3.1.3.</span> <span class="toc-text">负载对性能的影响</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#总结"><span class="toc-number">3.1.4.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#flag"><span class="toc-number">1.</span> <span class="toc-text">flag</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#不带arg的bool"><span class="toc-number">1.1.</span> <span class="toc-text">不带arg的bool</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#打印flag的默认值"><span class="toc-number">1.2.</span> <span class="toc-text">打印flag的默认值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FlagSet的复用"><span class="toc-number">1.3.</span> <span class="toc-text">FlagSet的复用</span></a></li></ol></li></ol>
   </div>
 
 <div id="asidepart">
