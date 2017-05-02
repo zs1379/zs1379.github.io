@@ -79,7 +79,7 @@
     </p>
   <p class="article-time">
     <time datetime="2015-08-09T13:21:17.000Z" itemprop="datePublished">2015-08-09</time>
-    Updated:<time datetime="2015-08-09T14:00:36.000Z" itemprop="dateModified">2015-08-09</time>
+    Updated:<time datetime="2017-05-02T06:24:45.000Z" itemprop="dateModified">2017-05-02</time>
     
   </p>
 </header>
@@ -89,7 +89,7 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#场景"><span class="toc-number">1.</span> <span class="toc-text">场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#go版watchdog"><span class="toc-number">2.</span> <span class="toc-text">go版watchdog</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#场景"><span class="toc-number">1.</span> <span class="toc-text">场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#go版watchdog"><span class="toc-number">2.</span> <span class="toc-text">go版watchdog</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#shell的统一"><span class="toc-number">2.1.</span> <span class="toc-text">shell的统一</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置文件"><span class="toc-number">2.2.</span> <span class="toc-text">配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#补充"><span class="toc-number">2.3.</span> <span class="toc-text">补充</span></a></li></ol></li></ol>
 		</div>
 		
 		<h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>在很多场景下，我们需要秒级地执行一些任务，例如每秒检查一些功能是否有新的需要处理的数据.</p>
@@ -99,26 +99,23 @@
 <p>但是在线上跑久了后，我们会发现一个问题，进程有时候虽然存在，但是并未是正常运行状态的，于是我们的watchdog就抓瞎了。</p>
 <h2 id="go版watchdog"><a href="#go版watchdog" class="headerlink" title="go版watchdog"></a>go版watchdog</h2><p>其实使用shell语言也是可以解决上面的问题的，只是我虽然经常写shell，但是仍感觉和高级语言对比起来shell实在是反人类，包括awk等也是…..然后又正好想看下go，于是花半天时间熟悉下写个简单的程序练练手。</p>
 <p>于是呢，按照下面的想法实现了下。</p>
-<p>###shell的统一###</p>
-<p>首先，规范化所有需要运行的cli程序，统一采用shell的sleep 1进行调用：</p>
+<h3 id="shell的统一"><a href="#shell的统一" class="headerlink" title="shell的统一"></a>shell的统一</h3><p>首先，规范化所有需要运行的cli程序，统一采用shell的sleep 1进行调用：</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#!/bin/bash</span></div><div class="line"><span class="comment">#检查消息队列</span></div><div class="line"></div><div class="line"><span class="comment">#等待时间</span></div><div class="line">wait_time=<span class="number">1</span></div><div class="line"></div><div class="line"><span class="keyword">while</span> <span class="keyword">true</span></div><div class="line"><span class="keyword">do</span></div><div class="line">  		<span class="keyword">echo</span> $(date <span class="string">'+%s'</span>) &gt; /data/pid/$$</div><div class="line"></div><div class="line">  		<span class="comment">##要执行的程序</span></div><div class="line">  		php xxxxxxx</div><div class="line"></div><div class="line">  		sleep $&#123;wait_time&#125;</div><div class="line">done</div></pre></td></tr></table></figure>
 <p>在中间，每次执行过程中，都将当前时间写入/data/pid/进程号 的文件中，注意哟，间隔时间不是1秒，而是1秒加上PHP程序运行的时间，如果在里面也进行sleep操作可能会造成一些坑，后面说。</p>
 <p>很明显，只要时间距离当前时间超过运行程序所需的时间，那就是进程已经假死了。</p>
-<p>###配置文件###</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#配置文件</span></div><div class="line"><span class="comment">#日志文件存放位置及名称</span></div><div class="line">logFile = /data/watchDog.log</div><div class="line"></div><div class="line"><span class="comment">#最大未执行时间，用于判断进程是否假死的最大时间，超过该时间未写入文件则判断为假死 秒</span></div><div class="line">slowTime = <span class="number">300</span></div><div class="line"></div><div class="line"><span class="comment">#进程时间保存位置</span></div><div class="line">pidDir = /data/pid/</div><div class="line"></div><div class="line"><span class="comment">#相关脚本所处位置以及可以启动的数量，格式需为xxx.sh = 数目 &gt;&gt; 脚本位置，注意必须为.sh文件</span></div><div class="line">/data/server/shell_center/shell/android_push_handle.sh = <span class="number">2</span> &gt;&gt; /tmp/nohup.log</div><div class="line">/data/server/shell_center/shell/register_handle.sh = <span class="number">1</span> &gt;&gt; /tmp/nohup.log</div><div class="line">/data/server/shell_center/shell/message_handle.sh = <span class="number">1</span> &gt;&gt; /tmp/nohup.log</div><div class="line">/data/server/shell_center/shell/notice_handle.sh = <span class="number">1</span> &gt;&gt; /tmp/nohup.log</div></pre></td></tr></table></figure>
+<h3 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#配置文件</span></div><div class="line"><span class="comment">#日志文件存放位置及名称</span></div><div class="line">logFile = /data/watchDog.log</div><div class="line"></div><div class="line"><span class="comment">#最大未执行时间，用于判断进程是否假死的最大时间，超过该时间未写入文件则判断为假死 秒</span></div><div class="line">slowTime = <span class="number">300</span></div><div class="line"></div><div class="line"><span class="comment">#进程时间保存位置</span></div><div class="line">pidDir = /data/pid/</div><div class="line"></div><div class="line"><span class="comment">#相关脚本所处位置以及可以启动的数量，格式需为xxx.sh = 数目 &gt;&gt; 脚本位置，注意必须为.sh文件</span></div><div class="line">/data/server/shell_center/shell/android_push_handle.sh = <span class="number">2</span> &gt;&gt; /tmp/nohup.log</div><div class="line">/data/server/shell_center/shell/register_handle.sh = <span class="number">1</span> &gt;&gt; /tmp/nohup.log</div><div class="line">/data/server/shell_center/shell/message_handle.sh = <span class="number">1</span> &gt;&gt; /tmp/nohup.log</div><div class="line">/data/server/shell_center/shell/notice_handle.sh = <span class="number">1</span> &gt;&gt; /tmp/nohup.log</div></pre></td></tr></table></figure>
 <p>第一个配置项logFile主要用于配置存放watchdog的日志，在程序运行过程中，启动进程或者杀死进程或者重启进程以及程序出错等信息都将会记录在该日志中。</p>
 <p>第二个配置项slowTime用于判断程序是否假死，前面说的程序sleep时间过长会导致的坑就来自这里，例如slowTime配置为5分钟，结果程序运行需要10分钟，那这时候会导致watchdog一直判断程序为假死，由于进程又是处于运行状态，会导致进程不断地进行重启。</p>
 <p>第三个配置项pidDir用于存放各个需要监控的进程的写入时间，例如/data/pid/111就是进程号111的进程写入的时间戳的保存文件。</p>
 <p>之后的配置文件就是用于配置需要监控的进程，现在仅支持配置数目，以及配置相应的日志路径，线上环境建议配置成不一样的日志文件。</p>
-<p>###补充###</p>
-<p>通过上面的说明，大致已经可以看出是啥想法了，就是有几点需要注意下：</p>
+<h3 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h3><p>通过上面的说明，大致已经可以看出是啥想法了，就是有几点需要注意下：</p>
 <ul>
 <li>配置文件必须为/etc/xyDog.conf，当然大家可以自己编译修改下，xy只是xiaoy的简写，可以无视。</li>
 <li>进程数从多改为低的情况下，将会导致watchdog自动杀死多余的进程，不过不影响正在跑的PHP脚本，PHP脚本将会正常跑完。</li>
 <li>线上环境中出现过ps命令无法匹配到进程的情况，或者进程已经结束的情况，暂时未明白是什么原因，有知道的希望告知下~，因为此原因，watchdog不适用于需要保证进程的唯一性的场景。</li>
 <li>由于存在一种情况，就是shell写入pid文件的同时watchdog去读取pid文件，因为是非原子性的操作，因此可能会出现问题。不想使用锁等方式，因此采用较为简单的重试机制，一旦读到空时间戳，就休眠10毫秒，最多重试3次</li>
 </ul>
-<p>Authors: xiaoy <a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#x6f;&#x3a;&#122;&#115;&#49;&#51;&#x37;&#57;&#64;&#x71;&#113;&#x2e;&#x63;&#x6f;&#x6d;">&#122;&#115;&#49;&#51;&#x37;&#57;&#64;&#x71;&#113;&#x2e;&#x63;&#x6f;&#x6d;</a></p>
+<p>Authors: xiaoy <a href="&#x6d;&#97;&#x69;&#x6c;&#x74;&#111;&#x3a;&#x7a;&#115;&#x31;&#x33;&#x37;&#x39;&#64;&#x71;&#x71;&#46;&#x63;&#x6f;&#x6d;">&#x7a;&#115;&#x31;&#x33;&#x37;&#x39;&#64;&#x71;&#x71;&#46;&#x63;&#x6f;&#x6d;</a></p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -176,7 +173,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#场景"><span class="toc-number">1.</span> <span class="toc-text">场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#go版watchdog"><span class="toc-number">2.</span> <span class="toc-text">go版watchdog</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#场景"><span class="toc-number">1.</span> <span class="toc-text">场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#go版watchdog"><span class="toc-number">2.</span> <span class="toc-text">go版watchdog</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#shell的统一"><span class="toc-number">2.1.</span> <span class="toc-text">shell的统一</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置文件"><span class="toc-number">2.2.</span> <span class="toc-text">配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#补充"><span class="toc-number">2.3.</span> <span class="toc-text">补充</span></a></li></ol></li></ol>
   </div>
 
 <div id="asidepart">
