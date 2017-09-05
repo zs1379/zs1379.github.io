@@ -4,13 +4,13 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>沉寂了几个月 | Xy-Home</title>
+    <title>k8s碰到的诡异问题 | Xy-Home</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="xiaoy">
     
-    <meta name="description" content="絮絮叨叨封闭了三个月，花了半个月讨论了需求，花了一个月做出了第一款产品，然后发现方向错误，丢弃，又经过半个月讨论，又花了一个月做出了第二款产品，然后发布android版上线，接下来一个月ios及web版上线。
-几个月下来，荒废了锻炼，胖了10斤；与朋友们的联系少了些许；但是最可怕的是一回来整个人突然">
+    <meta name="description" content="缘由最近在调试k8s的时候，碰到了诡异的问题，某个服务时而能访问时而不行，连续调了2天时间，终于发现了问题所在，踩在了去年已经踩在的坑上…因此做下记录防止下次继续脑抽。
+情况首先描述下当前环境，k8s使用的是v1.7版本的，然后一台master配上三台etcd，剩下的都是node机器，集群是新构建的">
     
     
     
@@ -70,15 +70,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/06/05/20150605/" title="沉寂了几个月" itemprop="url">沉寂了几个月</a>
+      <a href="/2017/09/05/20170905/" title="k8s碰到的诡异问题" itemprop="url">k8s碰到的诡异问题</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://www.xiaoy.name" title="xiaoy">xiaoy</a>
     </p>
   <p class="article-time">
-    <time datetime="2015-06-05T07:04:01.000Z" itemprop="datePublished">2015-06-05</time>
-    更新日期:<time datetime="2017-03-25T03:06:51.000Z" itemprop="dateModified">2017-03-25</time>
+    <time datetime="2017-09-05T07:04:38.000Z" itemprop="datePublished">2017-09-05</time>
+    更新日期:<time datetime="2017-09-05T08:49:56.000Z" itemprop="dateModified">2017-09-05</time>
     
   </p>
 </header>
@@ -88,45 +88,39 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#絮絮叨叨"><span class="toc-number">1.</span> <span class="toc-text">絮絮叨叨</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#架构"><span class="toc-number">1.1.</span> <span class="toc-text">架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#框架"><span class="toc-number">1.2.</span> <span class="toc-text">框架</span></a></li></ol></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#缘由"><span class="toc-number">1.</span> <span class="toc-text">缘由</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#情况"><span class="toc-number">2.</span> <span class="toc-text">情况</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分析"><span class="toc-number">3.</span> <span class="toc-text">分析</span></a></li></ol>
 		</div>
 		
-		<h2 id="絮絮叨叨"><a href="#絮絮叨叨" class="headerlink" title="絮絮叨叨"></a>絮絮叨叨</h2><p>封闭了三个月，花了半个月讨论了需求，花了一个月做出了第一款产品，然后发现方向错误，丢弃，又经过半个月讨论，又花了一个月做出了第二款产品，然后发布android版上线，接下来一个月ios及web版上线。</p>
-<p>几个月下来，荒废了锻炼，胖了10斤；与朋友们的联系少了些许；但是最可怕的是一回来整个人突然就懈怠了，不想学习不想研究，只想好好出去玩一趟…项目却又处于无法长时间离开的初期，只能撑着静下心来了。</p>
-<h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><p>在老产品排查时，才发现经过几个月发展，当初设计架构时的访问瓶颈已经达到，访问量已经翻番了，幸好大规模重构过一次，已经支持无痛扩展了。</p>
-<p>随着老产品逐步发展，当时架构设计上的一些不足逐步地暴露了出来，比如soa带来的分布式复杂性，导致CAP很难达到该有的SLA；把redis当做mysql使用带来的数据一致性难以保证问题；服务相互依赖带来的人员管理问题等等等。</p>
-<p>架构的复杂性带来的是扩展性，所以还是在接受代价以内的，不过也说明了很多东西还是需要完善的，东西一多就又难以进行排期，不进行排期事情就更多了，凌乱~</p>
-<p>作为架构师，永远都觉得自己的广度还需要扩展，但是我却发现自己突然很喜欢往部分技术的深度钻了，难道某一天会转为某门技术专家，哈哈哈哈。</p>
-<h3 id="框架"><a href="#框架" class="headerlink" title="框架"></a>框架</h3><p>xy框架也已经升级到了2.3.8版本，之前的设想已经都完善了，接下来该做的就是未来新员工入职统一风格及思想的培训了，终于可以比较省心地让新员工快速进行开发了。</p>
-<p>接下来的计划：</p>
-<ol>
-<li>做到高度自动化，自动化服务发现、自动化部署、自动化…………</li>
-<li>完善监控平台，做到一个请求在所有系统中的传递跟踪及生成异常报告</li>
-<li>SOA的速度优化以及SLA的更精细的统计，方便发现瓶颈</li>
-<li>进行APP端长连接优先于HTTP请求的尝试，希望后期能够替换掉现有服务</li>
-</ol>
-<p><strong> 大好周末降临<del>~</del>~ </strong></p>
-<p>Authors: xiaoy <a href="&#109;&#x61;&#x69;&#x6c;&#116;&#x6f;&#x3a;&#x7a;&#x73;&#x31;&#51;&#x37;&#x39;&#64;&#x71;&#113;&#x2e;&#99;&#x6f;&#x6d;">&#x7a;&#x73;&#x31;&#51;&#x37;&#x39;&#64;&#x71;&#113;&#x2e;&#99;&#x6f;&#x6d;</a></p>
+		<h2 id="缘由"><a href="#缘由" class="headerlink" title="缘由"></a>缘由</h2><p>最近在调试k8s的时候，碰到了诡异的问题，某个服务时而能访问时而不行，连续调了2天时间，终于发现了问题所在，踩在了去年已经踩在的坑上…因此做下记录防止下次继续脑抽。</p>
+<h2 id="情况"><a href="#情况" class="headerlink" title="情况"></a>情况</h2><p>首先描述下当前环境，k8s使用的是v1.7版本的，然后一台master配上三台etcd，剩下的都是node机器，集群是新构建的，机器都是由同样的公司统一的rpm包安装的centos7系统，因此不存在一些历史问题。</p>
+<p>调试时，我们在一个全新的命名空间放置了几个pod，然后创建了一个service以nodeport的方式来提供外部调试访问。这时候问题来了，在某些机器上，运维童鞋发现访问service会出现时断时续的问题，但是在另外一部分机器上又都是正常的。这些机器并没有什么特点，甚至后面发现在node机器上，也出现了部分机器可以部分机器不行的现象。</p>
+<p>抓规律无果，于是将pod数目scala到1，再次尝试，这时候就比较明朗了，访问pod所在的node节点时，有时候会出现无法访问的现象，但是使用其他node来转发的话，就没有无法访问的现象了。</p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>首先查了下kube-proxy的日志，期望能找到有问题，但是发现并未有啥相关的错误。根据其它台能访问的情况，确认pod本身是没有异常的，又由于我们走的是iptables转发的方式，于是开始排查iptables。</p>
+<p>iptables规则看了下都没有什么问题，通过在node机器上抓包，发现包有抵达但是都被丢弃后重传了。</p>
+<p>这时候就懵逼了，在google上翻了半天也没找到类似的问题，在官网文档倒是有个说到类似问题的，但是原因是network-plugin，也木有帮助。一本书上说到DNAT的转发消失bug问题，也是情况不一致。</p>
+<p>经过漫长的排查，最终发现居然是内核调优带来的问题。。。</p>
+<p>为了性能，我们的rpm有经过内核调优，其中两个参数net.ipv4.tcp_tw_recycle与net.ipv4.tcp_tw_reuse被设置成了1，正常情况下是没有什么问题，但是一旦涉及到nat，因为内核检查时间戳的原因….一些数据包被当做重传的数据，直接丢弃掉。</p>
+<p>早先时候我们在转发机上也碰到过这个问题，后来人工进行了调整，但是由于大部分机器都是非转发机，因此rpm包始终带着这块调优的参数…第二次遇到这个问题真是犯傻了，唉</p>
   
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/日常/">日常</a>
+  <span></span> <a href="/tags/网络/">网络</a>
   </div>
 
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/日常/">日常</a>
+  <a class="article-category-link" href="/categories/问题记录/">问题记录</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="http://www.xiaoy.name/2015/06/05/20150605/" data-title="沉寂了几个月 | Xy-Home" data-tsina="1188724621" class="share clearfix">
+  <div data-url="http://www.xiaoy.name/2017/09/05/20170905/" data-title="k8s碰到的诡异问题 | Xy-Home" data-tsina="1188724621" class="share clearfix">
   </div>
 
 </div>
@@ -135,19 +129,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2015/06/10/招聘那点事儿/" title="招聘那点事儿">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  招聘那点事儿</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2015/04/13/移动互联网相关性能-3/"  title="移动互联网相关性能(3)">
+<a href="/2017/05/12/travel/"  title="旅记">
  <strong>NEXT:</strong><br/> 
- <span>移动互联网相关性能(3)
+ <span>旅记
 </span>
 </a>
 </div>
@@ -164,7 +150,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#絮絮叨叨"><span class="toc-number">1.</span> <span class="toc-text">絮絮叨叨</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#架构"><span class="toc-number">1.1.</span> <span class="toc-text">架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#框架"><span class="toc-number">1.2.</span> <span class="toc-text">框架</span></a></li></ol></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#缘由"><span class="toc-number">1.</span> <span class="toc-text">缘由</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#情况"><span class="toc-number">2.</span> <span class="toc-text">情况</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分析"><span class="toc-number">3.</span> <span class="toc-text">分析</span></a></li></ol>
   </div>
 
 <div id="asidepart">
