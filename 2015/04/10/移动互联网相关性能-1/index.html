@@ -79,7 +79,7 @@
     </p>
   <p class="article-time">
     <time datetime="2015-04-10T11:04:01.000Z" itemprop="datePublished">2015-04-10</time>
-    更新日期:<time datetime="2017-05-02T06:11:24.000Z" itemprop="dateModified">2017-05-02</time>
+    更新日期:<time datetime="2017-09-19T15:14:02.000Z" itemprop="dateModified">2017-09-19</time>
     
   </p>
 </header>
@@ -89,7 +89,7 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#序"><span class="toc-number">1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一笔带过的前期优化"><span class="toc-number">2.</span> <span class="toc-text">一笔带过的前期优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#用户的环境"><span class="toc-number">3.</span> <span class="toc-text">用户的环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#WIFI"><span class="toc-number">3.1.</span> <span class="toc-text">WIFI</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#频段"><span class="toc-number">3.1.1.</span> <span class="toc-text">频段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#位置对性能的影响"><span class="toc-number">3.1.2.</span> <span class="toc-text">位置对性能的影响</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#负载对性能的影响"><span class="toc-number">3.1.3.</span> <span class="toc-text">负载对性能的影响</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#总结"><span class="toc-number">3.1.4.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#序"><span class="toc-number">1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一笔带过的前期优化"><span class="toc-number">2.</span> <span class="toc-text">一笔带过的前期优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#用户的环境"><span class="toc-number">3.</span> <span class="toc-text">用户的环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#WIFI"><span class="toc-number">3.1.</span> <span class="toc-text">WIFI</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#频段"><span class="toc-number">3.1.1.</span> <span class="toc-text">频段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#负载对性能的影响"><span class="toc-number">3.1.2.</span> <span class="toc-text">负载对性能的影响</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#总结"><span class="toc-number">3.1.3.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></li></ol>
 		</div>
 		
 		<h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>APP的访问速度一直都是大家非常关注的一个点，而近期因为某些原因投入比较多的精力在这上面，所以记录下相关心得。</p>
@@ -112,9 +112,8 @@
 <p>做完这些事情后，依然在有些情况下卡卡卡卡卡卡……<br>so，就有了下面的一些事情</p>
 <h2 id="用户的环境"><a href="#用户的环境" class="headerlink" title="用户的环境"></a>用户的环境</h2><p>想了想，还是按照整理完的流程来记录比较不容易混乱和前后跳来跳去～<br>首先，我们从用户的环境入手，一般情况下，移动互联网的用户主要访问都是来自于：WIFI、2G、3G、4G（排名不分先后）</p>
 <h3 id="WIFI"><a href="#WIFI" class="headerlink" title="WIFI"></a>WIFI</h3><p>一般说到wifi，很多朋友就会说，wifi肯定速度很快啦，如果有问题肯定是服务端问题…..[泪]<br>应该说我们需要知道一些东东：<br>无线路由器上的网速指的是理想情况下的网速，也就是频段都是它的，噪声是木有的，发射功率最大、位置最优，调制算法最优</p>
-<h4 id="频段"><a href="#频段" class="headerlink" title="频段"></a>频段</h4><p>我们知道wifi一般分为2.4GHz频段和5GHz频段。<br>2.4GHz的频段有三个不重叠的20MHz信道，也就是1、6、11，用无线网络信道检测软件我们可以很容易地看到。<br>经常我们还可以看到附近十几台路由器有三分之一和我们的信道是重叠的，so～这意味着什么呢，要知道信道的带宽是固定的！<br>也就是说，你家的无线路由器其实与重叠的信道共享带宽～，也就是说，隔壁的童鞋用重叠的信道看电影的话，你家的无线路由器的带宽居然会受到影响～～～<br>恩，所以我入了5GHz的路由器～，虽然反射和衍射能力变差了，但是在穿墙能力提升的同时，大多数情况下，还是很不容易产生冲突的。</p>
-<h4 id="位置对性能的影响"><a href="#位置对性能的影响" class="headerlink" title="位置对性能的影响"></a>位置对性能的影响</h4><p>曾经在公司有过这样的画面，同事要秒杀东西了，直接奔到无线路由器旁边，因为信号更好些～～～有道理莫？<br>恩，简单的说，有时候左手换到右手信号都会不一样。。。。。如果一开始速度很慢，换到无线路由器旁边位置其实也是个不错的选择，虽然不一定速度会变快- -</p>
-<h4 id="负载对性能的影响"><a href="#负载对性能的影响" class="headerlink" title="负载对性能的影响"></a>负载对性能的影响</h4><p>有线下使用的机制—冲突检测(Collision Detection)机制：发送方A检测到信道空闲了，发送数据，B也检测到空闲也发了，结果冲突了，在发送过程中就检测到冲突，所以进行指数等待重发<br>wifi下使用的机制—冲突避免(Collision Avoidance)机制：发送方A检测到信道空闲了，发送数据，B也检测到空闲也发了，结果冲突了，等发送完数据帧后接收方都木有确认，所以进行指数等待重发<br>可以看到，wifi下变为发完数据帧才能知道是否冲突了，这种概率访问方式应该说会影响高负载情况下的性能，所以，高负载情况下的无线路由器很容易性能不稳定<br>负载的增长会使得冲突次数上升很快，性能不稳定也是显而易见的。</p>
+<h4 id="频段"><a href="#频段" class="headerlink" title="频段"></a>频段</h4><p>我们知道wifi一般分为2.4GHz频段和5GHz频段。<br>2.4GHz的频段有三个不重叠的20MHz信道，也就是1、6、11，用无线网络信道检测软件我们可以很容易地看到。<br>经常我们还可以看到附近十几台路由器有三分之一和我们的信道是重叠的，so～这意味着什么呢，要知道这种冲突算临频冲突！<br>也就是说，你家的无线路由器其实会被其它人所干扰～，也就是说，隔壁的童鞋用重叠的信道看电影的话，你家的无线路由器的带宽居然可能无法发送数据～～～<br>恩，所以我入了5GHz的路由器～，虽然反射和衍射能力变差了，但是大多数情况下，不产生冲突还是更舒服的。</p>
+<h4 id="负载对性能的影响"><a href="#负载对性能的影响" class="headerlink" title="负载对性能的影响"></a>负载对性能的影响</h4><p>有线下使用的机制—冲突检测(Collision Detection)机制：发送方A检测到信道空闲了，发送数据，B也检测到空闲也发了，结果冲突了，在发送过程中就检测到冲突，所以进行指数等待重发<br>wifi下使用的机制—冲突避免(Collision Avoidance)机制：发送方A发送信号通知接收方发送忙碌广播，B检测到广播后不再发送数据，进行指数等待重发。<br>但是，临频的情况下，接收方是无法理解临频发出的忙碌广播的，这种方式应该说会非常影响高负载情况下的性能，所以，高负载情况下的无线路由器很容易性能不稳定。</p>
 <h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><ul>
 <li>频段是有限的，随着无线路由器越来越泛滥，信道的冲突已经是必然的了，不过暂时5GHz还是个不错的选择，国家应该也会逐步开放5GHz的更多频段</li>
 <li>无线很容易因为信噪比、位置而导致带宽变化</li>
@@ -124,7 +123,7 @@
 </ul>
 <p>wifi相关差不多就是这样子了，结论就是，还真没办法做什么优化，只能说客户端可以根据请求速度来进行图片流视频流大小的选择。</p>
 <p><strong>以上内容仅为经验上的一些整理，如有错误烦请通知下，让我有机会修改下知识误区～</strong></p>
-<p>Authors: xiaoy <a href="&#x6d;&#x61;&#105;&#108;&#x74;&#x6f;&#58;&#122;&#x73;&#49;&#x33;&#55;&#x39;&#64;&#113;&#x71;&#x2e;&#99;&#x6f;&#x6d;">&#122;&#x73;&#49;&#x33;&#55;&#x39;&#64;&#113;&#x71;&#x2e;&#99;&#x6f;&#x6d;</a></p>
+<p>Authors: xiaoy <a href="&#x6d;&#x61;&#x69;&#108;&#116;&#111;&#58;&#122;&#115;&#49;&#51;&#x37;&#x39;&#x40;&#x71;&#x71;&#46;&#99;&#x6f;&#x6d;">&#122;&#115;&#49;&#51;&#x37;&#x39;&#x40;&#x71;&#x71;&#46;&#99;&#x6f;&#x6d;</a></p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -174,7 +173,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#序"><span class="toc-number">1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一笔带过的前期优化"><span class="toc-number">2.</span> <span class="toc-text">一笔带过的前期优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#用户的环境"><span class="toc-number">3.</span> <span class="toc-text">用户的环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#WIFI"><span class="toc-number">3.1.</span> <span class="toc-text">WIFI</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#频段"><span class="toc-number">3.1.1.</span> <span class="toc-text">频段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#位置对性能的影响"><span class="toc-number">3.1.2.</span> <span class="toc-text">位置对性能的影响</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#负载对性能的影响"><span class="toc-number">3.1.3.</span> <span class="toc-text">负载对性能的影响</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#总结"><span class="toc-number">3.1.4.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#序"><span class="toc-number">1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一笔带过的前期优化"><span class="toc-number">2.</span> <span class="toc-text">一笔带过的前期优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#用户的环境"><span class="toc-number">3.</span> <span class="toc-text">用户的环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#WIFI"><span class="toc-number">3.1.</span> <span class="toc-text">WIFI</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#频段"><span class="toc-number">3.1.1.</span> <span class="toc-text">频段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#负载对性能的影响"><span class="toc-number">3.1.2.</span> <span class="toc-text">负载对性能的影响</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#总结"><span class="toc-number">3.1.3.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></li></ol>
   </div>
 
 <div id="asidepart">
