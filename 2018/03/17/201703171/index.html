@@ -1,0 +1,417 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>kubernetes1.9.4安装(2) | Xy-Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="xiaoy">
+    
+    <meta name="description" content="安装kube-apiserver下载执行以下命令[pwd:/tmp]
+123456mkdir /tmp/k8s/servercd /tmp/k8s/serverwget https://dl.k8s.io/v1.9.4/kubernetes-server-linux-amd64.tar.gztar ">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="Xy-Home" title="Xy-Home"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Xy-Home">Xy-Home</a></h1>
+				<h2 class="blog-motto">依然对blog各种无爱，还是单纯记录吧～</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//baidu.com/s" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="wd" autocomplete="off" maxlength="20" placeholder="Search" />
+                        <input name=tn type=hidden value="bds">
+                        <input name=cl type=hidden value="3">
+                        <input name=ct type=hidden value="2097152">
+						<input type="hidden" name="si" value="www.xiaoy.name">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2018/03/17/201703171/" title="kubernetes1.9.4安装(2)" itemprop="url">kubernetes1.9.4安装(2)</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://www.xiaoy.name" title="xiaoy">xiaoy</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2018-03-17T12:07:56.000Z" itemprop="datePublished">2018-03-17</time>
+    Updated:<time datetime="2018-03-17T13:50:49.873Z" itemprop="dateModified">2018-03-17</time>
+    
+  </p>
+</header>
+
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#安装kube-apiserver"><span class="toc-number">1.</span> <span class="toc-text">安装kube-apiserver</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#下载"><span class="toc-number">1.1.</span> <span class="toc-text">下载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置token"><span class="toc-number">1.2.</span> <span class="toc-text">配置token</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置service"><span class="toc-number">1.3.</span> <span class="toc-text">配置service</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装kube-controller-manager"><span class="toc-number">2.</span> <span class="toc-text">安装kube-controller-manager</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装kube-controller-manager-1"><span class="toc-number">3.</span> <span class="toc-text">安装kube-controller-manager</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置node节点"><span class="toc-number">4.</span> <span class="toc-text">配置node节点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装kubelet"><span class="toc-number">5.</span> <span class="toc-text">安装kubelet</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装kubelet-1"><span class="toc-number">6.</span> <span class="toc-text">安装kubelet</span></a></li></ol>
+		</div>
+		
+		<h2 id="安装kube-apiserver"><a href="#安装kube-apiserver" class="headerlink" title="安装kube-apiserver"></a>安装kube-apiserver</h2><h3 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h3><p>执行以下命令[pwd:/tmp]</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">mkdir /tmp/k8s/server</div><div class="line">cd /tmp/k8s/server</div><div class="line">wget https://dl.k8s.io/v1.9.4/kubernetes-server-linux-amd64.tar.gz</div><div class="line">tar -xzvf kubernetes-server-linux-amd64.tar.gz</div><div class="line"></div><div class="line">cp -r server/bin/&#123;kube-apiserver,kube-controller-manager,kube-scheduler,kube-proxy,kubelet&#125; /usr/k8s/bin/</div></pre></td></tr></table></figure>
+<p>将/usr/k8s/bin/同步到各个机器上</p>
+<h3 id="配置token"><a href="#配置token" class="headerlink" title="配置token"></a>配置token</h3><p>新建token.csv文件[pwd:/etc/kubernetes/]</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">46d06f86d21ad5e741eee998596bb57e,kubelet-bootstrap,10001,&quot;system:kubelet-bootstrap&quot;</div></pre></td></tr></table></figure>
+<p>46d06f86d21ad5e741eee998596bb57e为前面kubectl中说到的token字符串</p>
+<h3 id="配置service"><a href="#配置service" class="headerlink" title="配置service"></a>配置service</h3><p>新建audit-policy.yaml文件[pwd:/etc/kubernetes]</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div></pre></td><td class="code"><pre><div class="line">apiVersion: audit.k8s.io/v1beta1 # This is required.</div><div class="line">kind: Policy</div><div class="line"># Don&apos;t generate audit events for all requests in RequestReceived stage.</div><div class="line">omitStages:</div><div class="line">  - &quot;RequestReceived&quot;</div><div class="line">rules:</div><div class="line">  # Log pod changes at RequestResponse level</div><div class="line">  - level: RequestResponse</div><div class="line">    resources:</div><div class="line">    - group: &quot;&quot;</div><div class="line">      # Resource &quot;pods&quot; doesn&apos;t match requests to any subresource of pods,</div><div class="line">      # which is consistent with the RBAC policy.</div><div class="line">      resources: [&quot;pods&quot;]</div><div class="line">  # Log &quot;pods/log&quot;, &quot;pods/status&quot; at Metadata level</div><div class="line">  - level: Metadata</div><div class="line">    resources:</div><div class="line">    - group: &quot;&quot;</div><div class="line">      resources: [&quot;pods/log&quot;, &quot;pods/status&quot;]</div><div class="line"></div><div class="line">  # Don&apos;t log requests to a configmap called &quot;controller-leader&quot;</div><div class="line">  - level: None</div><div class="line">    resources:</div><div class="line">    - group: &quot;&quot;</div><div class="line">      resources: [&quot;configmaps&quot;]</div><div class="line">      resourceNames: [&quot;controller-leader&quot;]</div><div class="line"></div><div class="line">  # Don&apos;t log watch requests by the &quot;system:kube-proxy&quot; on endpoints or services</div><div class="line">  - level: None</div><div class="line">    users: [&quot;system:kube-proxy&quot;]</div><div class="line">    verbs: [&quot;watch&quot;]</div><div class="line">    resources:</div><div class="line">    - group: &quot;&quot; # core API group</div><div class="line">      resources: [&quot;endpoints&quot;, &quot;services&quot;]</div><div class="line"></div><div class="line">  # Don&apos;t log authenticated requests to certain non-resource URL paths.</div><div class="line">  - level: None</div><div class="line">    userGroups: [&quot;system:authenticated&quot;]</div><div class="line">    nonResourceURLs:</div><div class="line">    - &quot;/api*&quot; # Wildcard matching.</div><div class="line">    - &quot;/version&quot;</div><div class="line"></div><div class="line">  # Log the request body of configmap changes in kube-system.</div><div class="line">  - level: Request</div><div class="line">    resources:</div><div class="line">    - group: &quot;&quot; # core API group</div><div class="line">      resources: [&quot;configmaps&quot;]</div><div class="line">    # This rule only applies to resources in the &quot;kube-system&quot; namespace.</div><div class="line">    # The empty string &quot;&quot; can be used to select non-namespaced resources.</div><div class="line">    namespaces: [&quot;kube-system&quot;]</div><div class="line"></div><div class="line">  # Log configmap and secret changes in all other namespaces at the Metadata level.</div><div class="line">  - level: Metadata</div><div class="line">    resources:</div><div class="line">    - group: &quot;&quot; # core API group</div><div class="line">      resources: [&quot;secrets&quot;, &quot;configmaps&quot;]</div><div class="line"></div><div class="line">  # Log all other resources in core and extensions at the Request level.</div><div class="line">  - level: Request</div><div class="line">    resources:</div><div class="line">    - group: &quot;&quot; # core API group</div><div class="line">    - group: &quot;extensions&quot; # Version of group should NOT be included.</div><div class="line"></div><div class="line">  # A catch-all rule to log all other requests at the Metadata level.</div><div class="line">  - level: Metadata</div><div class="line">    # Long-running requests like watches that fall under this rule will not</div><div class="line">    # generate an audit event in RequestReceived.</div><div class="line">    omitStages:</div><div class="line">      - &quot;RequestReceived&quot;</div></pre></td></tr></table></figure>
+<p>新建kube-apiserver.service文件[pwd:/usr/lib/systemd/system]</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line">[Unit]</div><div class="line">Description=Kubernetes API Server</div><div class="line">Documentation=https://github.com/GoogleCloudPlatform/kubernetes</div><div class="line">After=network.target</div><div class="line"></div><div class="line">[Service]</div><div class="line">ExecStart=/usr/k8s/bin/kube-apiserver \</div><div class="line">  --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota \</div><div class="line">  --advertise-address=10.19.16.31 \</div><div class="line">  --bind-address=0.0.0.0 \</div><div class="line">  --insecure-bind-address=10.19.16.31 \</div><div class="line">  --authorization-mode=Node,RBAC \</div><div class="line">  --enable-bootstrap-token-auth \</div><div class="line">  --runtime-config=rbac.authorization.k8s.io/v1alpha1 \</div><div class="line">  --token-auth-file=/etc/kubernetes/token.csv \</div><div class="line">  --service-cluster-ip-range=10.254.0.0/16 \</div><div class="line">  --service-node-port-range=30000-33000 \</div><div class="line">  --tls-cert-file=/etc/kubernetes/ssl/kubernetes.pem \</div><div class="line">  --tls-private-key-file=/etc/kubernetes/ssl/kubernetes-key.pem \</div><div class="line">  --client-ca-file=/etc/kubernetes/ssl/ca.pem \</div><div class="line">  --service-account-key-file=/etc/kubernetes/ssl/ca-key.pem \</div><div class="line">  --etcd-servers=http://10.255.10.11:2979,http://10.255.10.12:2979,http://10.255.10.13:2979 \</div><div class="line">  --enable-swagger-ui=true \</div><div class="line">  --allow-privileged=true \</div><div class="line">  --apiserver-count=1 \</div><div class="line">  --audit-log-maxage=30 \</div><div class="line">  --audit-log-maxbackup=3 \</div><div class="line">  --audit-log-maxsize=100 \</div><div class="line">  --audit-log-path=/var/lib/audit.log \</div><div class="line">  --audit-policy-file=/etc/kubernetes/audit-policy.yaml \</div><div class="line">  --event-ttl=1h \</div><div class="line">  --log-dir=/data/logs/kubernetes \</div><div class="line">  --logtostderr=false \</div><div class="line">  --v=2</div><div class="line">Restart=on-failure</div><div class="line">RestartSec=5</div><div class="line">Type=notify</div><div class="line">LimitNOFILE=65536</div><div class="line"></div><div class="line">[Install]</div><div class="line">WantedBy=multi-user.target</div></pre></td></tr></table></figure>
+<p>执行以下命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">systemctl daemon-reload</div><div class="line">systemctl enable kube-apiserver</div><div class="line">systemctl start kube-apiserver</div></pre></td></tr></table></figure>
+<p>执行以下命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">kubectl create clusterrolebinding kubelet-bootstrap --clusterrole=system:node-bootstrapper --user=kubelet-bootstrap</div><div class="line"></div><div class="line">kubectl create clusterrolebinding kubelet-nodes --clusterrole=system:node --group=system:nodes</div></pre></td></tr></table></figure>
+<h2 id="安装kube-controller-manager"><a href="#安装kube-controller-manager" class="headerlink" title="安装kube-controller-manager"></a>安装kube-controller-manager</h2><p>新建kube-controller-manager.service文件[pwd:/usr/lib/systemd/system]</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">[Unit]</div><div class="line">Description=Kubernetes Controller Manager</div><div class="line">Documentation=https://github.com/GoogleCloudPlatform/kubernetes</div><div class="line"></div><div class="line">[Service]</div><div class="line">ExecStart=/usr/k8s/bin/kube-controller-manager \</div><div class="line">  --address=127.0.0.1 \</div><div class="line">  --master=http://k8s-api.virtual.local:8080 \</div><div class="line">  --allocate-node-cidrs=true \</div><div class="line">  --service-cluster-ip-range=10.254.0.0/16 \</div><div class="line">  --cluster-cidr=10.16.0.0/16 \</div><div class="line">  --cluster-name=kubernetes \</div><div class="line">  --cluster-signing-cert-file=/etc/kubernetes/ssl/ca.pem \</div><div class="line">  --cluster-signing-key-file=/etc/kubernetes/ssl/ca-key.pem \</div><div class="line">  --service-account-private-key-file=/etc/kubernetes/ssl/ca-key.pem \</div><div class="line">  --root-ca-file=/etc/kubernetes/ssl/ca.pem \</div><div class="line">  --leader-elect=true \</div><div class="line">  --log-dir=/data/logs/kubernetes \</div><div class="line">  --logtostderr=false \</div><div class="line">  --v=2</div><div class="line">Restart=on-failure</div><div class="line">RestartSec=5</div><div class="line"></div><div class="line">[Install]</div><div class="line">WantedBy=multi-user.target</div></pre></td></tr></table></figure>
+<p>执行以下命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">systemctl daemon-reload</div><div class="line">systemctl enable kube-controller-manager</div><div class="line">systemctl start kube-controller-manager</div></pre></td></tr></table></figure>
+<h2 id="安装kube-controller-manager-1"><a href="#安装kube-controller-manager-1" class="headerlink" title="安装kube-controller-manager"></a>安装kube-controller-manager</h2><p>新建kube-scheduler.service文件[pwd:/usr/lib/systemd/system]</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">[Unit]</div><div class="line">Description=Kubernetes Scheduler</div><div class="line">Documentation=https://github.com/GoogleCloudPlatform/kubernetes</div><div class="line"></div><div class="line">[Service]</div><div class="line">ExecStart=/usr/k8s/bin/kube-scheduler \</div><div class="line">  --address=127.0.0.1 \</div><div class="line">  --master=http://k8s-api.virtual.local:8080 \</div><div class="line">  --leader-elect=true \</div><div class="line">  --log-dir=/data/logs/kubernetes \</div><div class="line">  --logtostderr=false \</div><div class="line">  --v=2</div><div class="line">Restart=on-failure</div><div class="line">RestartSec=5</div><div class="line"></div><div class="line">[Install]</div><div class="line">WantedBy=multi-user.target</div></pre></td></tr></table></figure>
+<p>执行以下命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">systemctl daemon-reload</div><div class="line">systemctl enable kube-scheduler</div><div class="line">systemctl start kube-scheduler</div></pre></td></tr></table></figure>
+<h2 id="配置node节点"><a href="#配置node节点" class="headerlink" title="配置node节点"></a>配置node节点</h2><p>以下开始切换到对应的node机器执行，以下示例为10.19.162.173</p>
+<p>修改sysctl.conf[pwd:/etc/]</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">net.ipv4.ip_forward=1</div><div class="line">net.bridge.bridge-nf-call-iptables=1</div><div class="line">net.bridge.bridge-nf-call-ip6tables=1</div></pre></td></tr></table></figure>
+<p>执行以下命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">sysctl -p</div><div class="line">systemctl stop firewalld</div><div class="line">systemctl disable firewalld</div><div class="line">iptables -F &amp;&amp; sudo iptables -X &amp;&amp; sudo iptables -F -t nat &amp;&amp; sudo iptables -X -t nat</div></pre></td></tr></table></figure>
+<h2 id="安装kubelet"><a href="#安装kubelet" class="headerlink" title="安装kubelet"></a>安装kubelet</h2><p>执行以下命令[pwd:/etc/kubernetes]</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">kubectl config set-cluster kubernetes \</div><div class="line">  --certificate-authority=/etc/kubernetes/ssl/ca.pem \</div><div class="line">  --embed-certs=true \</div><div class="line">  --server=https://k8s-api.virtual.local:6443 \</div><div class="line">  --kubeconfig=bootstrap.kubeconfig</div><div class="line">  </div><div class="line">kubectl config set-credentials kubelet-bootstrap \</div><div class="line">  --token=46d06f86d21ad5e741eee998596bb57e \</div><div class="line">  --kubeconfig=bootstrap.kubeconfig</div><div class="line"></div><div class="line">kubectl config set-context default \</div><div class="line">  --cluster=kubernetes \</div><div class="line">  --user=kubelet-bootstrap \</div><div class="line">  --kubeconfig=bootstrap.kubeconfig</div><div class="line"></div><div class="line">kubectl config use-context default --kubeconfig=bootstrap.kubeconfig</div><div class="line"></div><div class="line">mkdir /var/lib/kubelet</div></pre></td></tr></table></figure>
+<p>新增kubelet.service文件[pwd:/usr/lib/systemd/system]</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">[Unit]</div><div class="line">Description=Kubernetes Kubelet</div><div class="line">Documentation=https://github.com/GoogleCloudPlatform/kubernetes</div><div class="line">After=docker.service</div><div class="line">Requires=docker.service</div><div class="line"></div><div class="line">[Service]</div><div class="line">WorkingDirectory=/var/lib/kubelet</div><div class="line">ExecStart=/usr/k8s/bin/kubelet \</div><div class="line">  --fail-swap-on=false \</div><div class="line">  --cgroup-driver=cgroupfs \</div><div class="line">  --address=10.19.162.173 \</div><div class="line">  --hostname-override=10.19.162.173 \</div><div class="line">  --bootstrap-kubeconfig=/etc/kubernetes/bootstrap.kubeconfig \</div><div class="line">  --kubeconfig=/etc/kubernetes/kubelet.kubeconfig \</div><div class="line">  --cert-dir=/etc/kubernetes/ssl \</div><div class="line">  --cluster-dns=10.254.0.2 \</div><div class="line">  --cluster-domain=cluster.local. \</div><div class="line">  --hairpin-mode promiscuous-bridge \</div><div class="line">  --allow-privileged=true \</div><div class="line">  --serialize-image-pulls=false \</div><div class="line">  --logtostderr=true \</div><div class="line">  --v=2</div><div class="line">ExecStartPost=/sbin/iptables -A INPUT -s 10.0.0.0/8 -p tcp --dport 4194 -j ACCEPT</div><div class="line">ExecStartPost=/sbin/iptables -A INPUT -s 172.17.0.0/12 -p tcp --dport 4194 -j ACCEPT</div><div class="line">ExecStartPost=/sbin/iptables -A INPUT -s 192.168.1.0/16 -p tcp --dport 4194 -j ACCEPT</div><div class="line">ExecStartPost=/sbin/iptables -A INPUT -p tcp --dport 4194 -j DROP</div><div class="line">Restart=on-failure</div><div class="line">RestartSec=5</div><div class="line"></div><div class="line">[Install]</div><div class="line">WantedBy=multi-user.target</div></pre></td></tr></table></figure>
+<p>执行以下命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">systemctl daemon-reload</div><div class="line">systemctl enable kubelet</div><div class="line">systemctl start kubelet</div><div class="line"></div><div class="line">kubectl get csr</div><div class="line">kubectl certificate approve node-csr--xxxxxxxxxxxx</div></pre></td></tr></table></figure>
+<p>node-csr–xxxxxxxxxxxx为get scr后的返回结果</p>
+<h2 id="安装kubelet-1"><a href="#安装kubelet-1" class="headerlink" title="安装kubelet"></a>安装kubelet</h2><p>执行以下命令[pwd:/etc/kubernetes]</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">kubectl config set-cluster kubernetes \</div><div class="line">  --certificate-authority=/etc/kubernetes/ssl/ca.pem \</div><div class="line">  --embed-certs=true \</div><div class="line">  --server=https://k8s-api.virtual.local:6443 \</div><div class="line">  --kubeconfig=kube-proxy.kubeconfig</div><div class="line">  </div><div class="line">kubectl config set-credentials kube-proxy \</div><div class="line">  --client-certificate=/etc/kubernetes/ssl/kube-proxy.pem \</div><div class="line">  --client-key=/etc/kubernetes/ssl/kube-proxy-key.pem \</div><div class="line">  --embed-certs=true \</div><div class="line">  --kubeconfig=kube-proxy.kubeconfig</div><div class="line">  </div><div class="line">kubectl config set-context default \</div><div class="line">  --cluster=kubernetes \</div><div class="line">  --user=kube-proxy \</div><div class="line">  --kubeconfig=kube-proxy.kubeconfig</div><div class="line">  </div><div class="line">kubectl config use-context default --kubeconfig=kube-proxy.kubeconfig</div><div class="line"></div><div class="line">mkdir -p /var/lib/kube-proxy</div></pre></td></tr></table></figure>
+<p>新增kube-proxy.service文件[pwd:/usr/lib/systemd/system]</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">[Unit]</div><div class="line">Description=Kubernetes Kube-Proxy Server</div><div class="line">Documentation=https://github.com/GoogleCloudPlatform/kubernetes</div><div class="line">After=network.target</div><div class="line"></div><div class="line">[Service]</div><div class="line">WorkingDirectory=/var/lib/kube-proxy</div><div class="line">ExecStart=/usr/k8s/bin/kube-proxy \</div><div class="line">  --bind-address=10.19.162.173 \</div><div class="line">  --hostname-override=10.19.162.173 \</div><div class="line">  --cluster-cidr=10.254.0.0/16 \</div><div class="line">  --kubeconfig=/etc/kubernetes/kube-proxy.kubeconfig \</div><div class="line">  --logtostderr=true \</div><div class="line">  --v=2</div><div class="line">Restart=on-failure</div><div class="line">RestartSec=5</div><div class="line">LimitNOFILE=65536</div><div class="line"></div><div class="line">[Install]</div><div class="line">WantedBy=multi-user.target</div></pre></td></tr></table></figure>
+<p>执行以下命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">systemctl daemon-reload</div><div class="line">systemctl enable kube-proxy</div><div class="line">systemctl start kube-proxy</div></pre></td></tr></table></figure>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/k8s/">k8s</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/k8s/">k8s</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://www.xiaoy.name/2018/03/17/201703171/" data-title="kubernetes1.9.4安装(2) | Xy-Home" data-tsina="1188724621" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2018/03/17/20180317/"  title="kubernetes1.9.4安装(1)">
+ <strong>NEXT:</strong><br/> 
+ <span>kubernetes1.9.4安装(1)
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#安装kube-apiserver"><span class="toc-number">1.</span> <span class="toc-text">安装kube-apiserver</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#下载"><span class="toc-number">1.1.</span> <span class="toc-text">下载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置token"><span class="toc-number">1.2.</span> <span class="toc-text">配置token</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置service"><span class="toc-number">1.3.</span> <span class="toc-text">配置service</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装kube-controller-manager"><span class="toc-number">2.</span> <span class="toc-text">安装kube-controller-manager</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装kube-controller-manager-1"><span class="toc-number">3.</span> <span class="toc-text">安装kube-controller-manager</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置node节点"><span class="toc-number">4.</span> <span class="toc-text">配置node节点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装kubelet"><span class="toc-number">5.</span> <span class="toc-text">安装kubelet</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装kubelet-1"><span class="toc-number">6.</span> <span class="toc-text">安装kubelet</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">Categories</p>
+		<ul>
+		
+			<li><a href="/categories/go/" title="go">go<sup>1</sup></a></li>
+		
+			<li><a href="/categories/golang/" title="golang">golang<sup>1</sup></a></li>
+		
+			<li><a href="/categories/java/" title="java">java<sup>2</sup></a></li>
+		
+			<li><a href="/categories/k8s/" title="k8s">k8s<sup>2</sup></a></li>
+		
+			<li><a href="/categories/协议/" title="协议">协议<sup>1</sup></a></li>
+		
+			<li><a href="/categories/性能/" title="性能">性能<sup>3</sup></a></li>
+		
+			<li><a href="/categories/日常/" title="日常">日常<sup>5</sup></a></li>
+		
+			<li><a href="/categories/架构/" title="架构">架构<sup>3</sup></a></li>
+		
+			<li><a href="/categories/问题记录/" title="问题记录">问题记录<sup>3</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/go/" title="go">go<sup>1</sup></a></li>
+		
+			<li><a href="/tags/golang/" title="golang">golang<sup>1</sup></a></li>
+		
+			<li><a href="/tags/java/" title="java">java<sup>2</sup></a></li>
+		
+			<li><a href="/tags/k8s/" title="k8s">k8s<sup>2</sup></a></li>
+		
+			<li><a href="/tags/协议/" title="协议">协议<sup>1</sup></a></li>
+		
+			<li><a href="/tags/性能/" title="性能">性能<sup>3</sup></a></li>
+		
+			<li><a href="/tags/日常/" title="日常">日常<sup>6</sup></a></li>
+		
+			<li><a href="/tags/架构/" title="架构">架构<sup>3</sup></a></li>
+		
+			<li><a href="/tags/网络/" title="网络">网络<sup>3</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+  <div class="archiveslist">
+    <p class="asidetitle"><a href="/archives">Archives</a></p>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a><span class="archive-list-count">3</span></li></ul>
+  </div>
+
+
+  
+  <div class="tagcloudlist">
+    <p class="asidetitle">Tag Cloud</p>
+    <div class="tagcloudlist clearfix">
+       <a href="/tags/go/" style="font-size: 10px;">go</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/java/" style="font-size: 13.33px;">java</a> <a href="/tags/k8s/" style="font-size: 13.33px;">k8s</a> <a href="/tags/协议/" style="font-size: 10px;">协议</a> <a href="/tags/性能/" style="font-size: 16.67px;">性能</a> <a href="/tags/日常/" style="font-size: 20px;">日常</a> <a href="/tags/架构/" style="font-size: 16.67px;">架构</a> <a href="/tags/网络/" style="font-size: 16.67px;">网络</a>
+    </div>
+  </div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<section class="info">
+		<p> 架构师，devops <br/>
+			only for save sth.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		<a href="https://github.com/zs1379" target="_blank" title="github"></a>
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wizicer/iceman" target="_blank" title="Iceman">Iceman</a> © 2018 
+		
+		<a href="http://www.xiaoy.name" target="_blank" title="xiaoy">xiaoy</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"zs1379"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+
+  </body>
+</html>
+
