@@ -68,166 +68,22 @@
 
   <section class="post" itemscope itemprop="blogPost">
   
-    <a href="/2018/03/17/20180317/" title="kubernetes1.9.4安装(1)" itemprop="url">
+    <a href="/2015/04/10/移动互联网相关性能-1/" title="移动互联网相关性能(1)" itemprop="url">
   
-    <h1 itemprop="name">kubernetes1.9.4安装(1)</h1>
+    <h1 itemprop="name">移动互联网相关性能(1)</h1>
     
      
-           <p itemprop="description" >序每次安装k8s总会碰到这样那样的问题，群里也经常有人咨询这块的，所以记录下当前1.9.4版本的安装方法。
-环境
-CentOS 7.1 进行了公司内部的rpm定制，但是不影响
-Kubernetes 1.9.4版本
-Etcd V3
-Docker 17.12.1-ce，默认所有机子上</p>
+           <p itemprop="description" >序APP的访问速度一直都是大家非常关注的一个点，而近期因为某些原因投入比较多的精力在这上面，所以记录下相关心得。
+一笔带过的前期优化刚接需要优化的项目时，APP平时不算非常卡，但是一旦遇到高峰期就卡得无法访问。我们通过修改整体架构，切割并分布各系统，让APP恢复到正常速度的水平。</p>
         
     
-    <time datetime="2018-03-17T09:14:56.000Z" itemprop="datePublished">2018-03-17</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2017/09/05/20170905/" title="k8s碰到的诡异问题" itemprop="url">
-  
-    <h1 itemprop="name">k8s碰到的诡异问题</h1>
-    
-     
-           <p itemprop="description" >缘由最近在调试k8s的时候，碰到了诡异的问题，某个服务时而能访问时而不行，连续调了2天时间，终于发现了问题所在，踩在了去年已经踩在的坑上…因此做下记录防止下次继续脑抽。
-情况首先描述下当前环境，k8s使用的是v1.7版本的，然后一台master配上三台etcd，剩下的都是node</p>
-        
-    
-    <time datetime="2017-09-05T07:04:38.000Z" itemprop="datePublished">2017-09-05</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2017/05/12/travel/" title="旅记" itemprop="url">
-  
-    <h1 itemprop="name">旅记</h1>
-    
-     
-           <p itemprop="description" >序今天看到朋友圈的一篇叫《中国游客，你被攻略骗的样子真蠢》，写得挺好的，虽然说不上全部认同。
-想着是该整理一下自己现在对旅行的一个记忆与感受了。
-起始在接近8年的时间里，我逐步地把全国各地跑了个遍(省为单位的话)，却从未去国外旅行过。原因挺好玩的，当年觉得中国这么大的面积，为什么</p>
-        
-    
-    <time datetime="2017-05-11T23:10:29.000Z" itemprop="datePublished">2017-05-12</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2017/04/27/golang-1/" title="golang好玩的语法细节(1)" itemprop="url">
-  
-    <h1 itemprop="name">golang好玩的语法细节(1)</h1>
-    
-     
-           <p itemprop="description" >flag不带arg的bool如果声明了某一个bool类型的参数，例如-n，不传值的情况下用的是声明的默认值，但是如果是声明了该参数(例如n)，但是后面不带值的话(即不写n=true或者n true)，则会被设置为true。但是如果是int型或者其他的类型，则会退出提示请输入参数。</p>
-        
-    
-    <time datetime="2017-04-27T07:36:10.000Z" itemprop="datePublished">2017-04-27</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2017/03/25/20170325/" title="即将而立之年的反思" itemprop="url">
-  
-    <h1 itemprop="name">即将而立之年的反思</h1>
-    
-     
-           <p itemprop="description" >默默忙碌了大半年今天看某童鞋写了个心情感慨临近30而立，悚然发现我也接近了。而且前段时间华为裁大龄员工事件闹得沸沸扬扬了，虽然不知真假，但是依然被惊了下，早期虽然想过该问题却刻意忽略了。趁着周末思考下，技术人员到底该何去何从。
-first从2009年工作至今，已经过去了七八个年头</p>
-        
-    
-    <time datetime="2017-03-25T03:04:38.000Z" itemprop="datePublished">2017-03-25</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2017/03/17/err-of-the-codis-solt-migrate/" title="codis迁移solt时的一个微坑" itemprop="url">
-  
-    <h1 itemprop="name">codis迁移solt时的一个微坑</h1>
-    
-     
-           <p itemprop="description" >引子前几日半夜11点多，运维的同事正在处理服务器被cc的事情，然后到了十二点整，报警邮件突然疯狂而至，几乎都是提示codis-proxy的端口无法连接。接着几分钟后客服及运营同事也相继反馈app的功能开始出现不稳定现象。
-分析过程第一时间打开了电脑，虽然刚被攻击，但是感觉此事应该</p>
-        
-    
-    <time datetime="2017-03-17T15:20:12.000Z" itemprop="datePublished">2017-03-17</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2016/09/10/20160910/" title="关于帧前八字节的疑惑" itemprop="url">
-  
-    <h1 itemprop="name">关于帧前八字节的疑惑</h1>
-    
-     
-           <p itemprop="description" >缘由大好的周六下午，朋友给的一个交换机的资料，让我对之前一些东西产生了疑问，理了几个小时资料，终于理顺了下思路，顺便记录一些过程。
-朋友的公司的交换机比较神奇，是属于直通转发式的，按照资料上看也就是说只读取帧的前14个字节，按照我之前的理解，我认为是读取了目的MAC、源MAC、以</p>
-        
-    
-    <time datetime="2016-09-10T15:42:24.000Z" itemprop="datePublished">2016-09-10</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2016/08/30/connection-reset-by-peer-md/" title="奇怪的RST返回" itemprop="url">
-  
-    <h1 itemprop="name">奇怪的RST返回</h1>
-    
-     
-           <p itemprop="description" >问题描述这是个很奇怪的问题，在早先时候我们在转发层nginx捕获到了一种日志，connection reset by peer，这个错误我们一般都是在业务服务器上看到，很少出现在转发层。
-问题分析当时我们分析的时候，从字面意思上去理解的话，其实就是客户端或者转发层或者中间层提前断</p>
-        
-    
-    <time datetime="2016-08-30T03:28:18.000Z" itemprop="datePublished">2016-08-30</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2016/06/04/book-list-by-xiaoy/" title="书籍相关分享" itemprop="url">
-  
-    <h1 itemprop="name">书籍相关分享</h1>
-    
-     
-           <p itemprop="description" >分享下相关书籍序从以前每期必买的电脑爱好者、微型计算机、电脑报等各种期刊开始，到后面逐步购买专向的技术书籍，前前后后不知道投入了多少金钱和精力在书籍上。
-而个人感觉，看书籍和看blog之类的差别最大在于：
-
-知识的完整性，blog、期刊的知识一般较为零散，无法串成一条知识链，但是</p>
-        
-    
-    <time datetime="2016-06-04T09:37:10.000Z" itemprop="datePublished">2016-06-04</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2015/10/27/jvm1/" title="【笔记】jvm相关二" itemprop="url">
-  
-    <h1 itemprop="name">【笔记】jvm相关二</h1>
-    
-     
-           <p itemprop="description" >续这几天忙于处理数据库的异常问题，七天通宵了三天，外加两天在公司呆到2点，也是醉了。今天晚上终于有时间静下心来好好复习下这块了。
-相关类型
-类类型[Class Type]          {引用类型}
-数组类型[Array Type]         {引用类型}
-接口类型[I</p>
-        
-    
-    <time datetime="2015-10-27T14:36:18.000Z" itemprop="datePublished">2015-10-27</time>
+    <time datetime="2015-04-10T11:04:01.000Z" itemprop="datePublished">2015-04-10</time>
   </a>
 </section>
 
 
   <nav id="page-nav" class="clearfix">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
   </nav>
 
 </div>
