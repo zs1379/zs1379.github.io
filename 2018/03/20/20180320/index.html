@@ -4,13 +4,14 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>golang好玩的语法细节(1) | Xy-Home</title>
+    <title>关于k8s v1.9的iptables问题 | Xy-Home</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="xiaoy">
     
-    <meta name="description" content="flag不带arg的bool如果声明了某一个bool类型的参数，例如-n，不传值的情况下用的是声明的默认值，但是如果是声明了该参数(例如n)，但是后面不带值的话(即不写n=true或者n true)，则会被设置为true。但是如果是int型或者其他的类型，则会退出提示请输入参数。
-这个原因可以在源码">
+    <meta name="description" content="ALL在启动kube-proxy后报以下错误，具体表现为proxy工作不正常。
+1Failed to execute iptables-restore for nat: exit status 1 (iptables-restore: line 7 failed)
+查明原因是centos下v1.4版">
     
     
     
@@ -70,15 +71,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2017/04/27/golang-1/" title="golang好玩的语法细节(1)" itemprop="url">golang好玩的语法细节(1)</a>
+      <a href="/2018/03/20/20180320/" title="关于k8s v1.9的iptables问题" itemprop="url">关于k8s v1.9的iptables问题</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://www.xiaoy.name" title="xiaoy">xiaoy</a>
     </p>
   <p class="article-time">
-    <time datetime="2017-04-27T07:36:10.000Z" itemprop="datePublished">2017-04-27</time>
-    Updated:<time datetime="2017-04-27T07:46:20.000Z" itemprop="dateModified">2017-04-27</time>
+    <time datetime="2018-03-20T01:48:22.000Z" itemprop="datePublished">2018-03-20</time>
+    Updated:<time datetime="2018-03-20T02:07:00.644Z" itemprop="dateModified">2018-03-20</time>
     
   </p>
 </header>
@@ -88,36 +89,39 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#flag"><span class="toc-number">1.</span> <span class="toc-text">flag</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#不带arg的bool"><span class="toc-number">1.1.</span> <span class="toc-text">不带arg的bool</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#打印flag的默认值"><span class="toc-number">1.2.</span> <span class="toc-text">打印flag的默认值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FlagSet的复用"><span class="toc-number">1.3.</span> <span class="toc-text">FlagSet的复用</span></a></li></ol></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ALL"><span class="toc-number">1.</span> <span class="toc-text">ALL</span></a></li></ol>
 		</div>
 		
-		<h2 id="flag"><a href="#flag" class="headerlink" title="flag"></a>flag</h2><h3 id="不带arg的bool"><a href="#不带arg的bool" class="headerlink" title="不带arg的bool"></a>不带arg的bool</h3><p>如果声明了某一个bool类型的参数，例如-n，不传值的情况下用的是声明的默认值，但是如果是声明了该参数(例如n)，但是后面不带值的话(即不写n=true或者n true)，则会被设置为true。但是如果是int型或者其他的类型，则会退出提示请输入参数。</p>
-<p>这个原因可以在源码看到，就定义在flag的源码parseOne中，它对bool做了特殊处理，可见注释中的描述’// special case: doesn’t need an arg’</p>
-<h3 id="打印flag的默认值"><a href="#打印flag的默认值" class="headerlink" title="打印flag的默认值"></a>打印flag的默认值</h3><p>在PrintDefaults的输出，一般我们都可以看到名称、类型、解释、内容，例如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">-name int    </div><div class="line">please enter name (default 1)</div></pre></td></tr></table></figure></p>
-<p>但是如果为bool型，并且默认值为false，会发现类型和默认值都不见了~<br>如果为int型，并且默认值为0，则默认值不见了。</p>
-<p>这个是由于false、空字符串、0值都不会打印默认值，因此默认值会消失。</p>
-<p>而bool类型的消失，在注释中可以找到原因，Boolean flags of one ASCII letter are so common we treat them specially, putting their usage on the same line.</p>
-<h3 id="FlagSet的复用"><a href="#FlagSet的复用" class="headerlink" title="FlagSet的复用"></a>FlagSet的复用</h3><p>看文档会发现FlagSet的方法以及没使用FlagSet的方法是对应的，实际上没带的时候FlagSet就是默认为ExitOnError的FlagSet而已。但是在源码中，代码却是完全拷贝的一份，不知道为啥这样子实现~</p>
+		<h2 id="ALL"><a href="#ALL" class="headerlink" title="ALL"></a>ALL</h2><p>在启动kube-proxy后报以下错误，具体表现为proxy工作不正常。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Failed to execute iptables-restore for nat: exit status 1 (iptables-restore: line 7 failed)</div></pre></td></tr></table></figure>
+<p>查明原因是centos下v1.4版本的iptables并未支持-w参数，于是升级至v1.6版本。</p>
+<p>重启报新的错误</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Failed to execute iptables-restore: exit status 1 (iptables-restore: invalid option -- &apos;5&apos;</div><div class="line">Try `iptables-restore -h&apos; for more information.</div></pre></td></tr></table></figure>
+<p>依然有不支持的命令列表，查看源码发现是pkg/util/iptables/iptables.go中的123行开始的一段</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Minimum iptables versions supporting the -w and -w&lt;seconds&gt; flags</span></div><div class="line"><span class="keyword">const</span> WaitMinVersion = <span class="string">"1.4.20"</span></div><div class="line"><span class="keyword">const</span> WaitSecondsMinVersion = <span class="string">"1.4.22"</span></div><div class="line"><span class="keyword">const</span> WaitString = <span class="string">"-w"</span></div><div class="line"><span class="keyword">const</span> WaitSecondsString = <span class="string">"-w5"</span></div></pre></td></tr></table></figure>
+<p>-w5并不被支持，试了一下-w 5是被支持的，在master分支看到代码居然和v1.9是不一样的，找了下对应的补丁</p>
+<p><a href="https://github.com/andrewhowdencom/kubernetes/commit/36a71f8e52e73a8fd27b84f854dfcabd5b9ce1b6" target="_blank" rel="external">https://github.com/andrewhowdencom/kubernetes/commit/36a71f8e52e73a8fd27b84f854dfcabd5b9ce1b6</a></p>
+<p>合并到1.9分支重新编译出来，恢复正常。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/golang/">golang</a>
+  <span></span> <a href="/tags/k8s/">k8s"</a>
   </div>
 
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/golang/">golang</a>
+  <a class="article-category-link" href="/categories/问题记录/">问题记录</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="http://www.xiaoy.name/2017/04/27/golang-1/" data-title="golang好玩的语法细节(1) | Xy-Home" data-tsina="1188724621" class="share clearfix">
+  <div data-url="http://www.xiaoy.name/2018/03/20/20180320/" data-title="关于k8s v1.9的iptables问题 | Xy-Home" data-tsina="1188724621" class="share clearfix">
   </div>
 
 </div>
@@ -126,19 +130,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2017/05/12/travel/" title="旅记">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  旅记</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2017/03/25/20170325/"  title="即将而立之年的反思">
+<a href="/2018/03/17/201703171/"  title="kubernetes1.9.4安装(2)">
  <strong>NEXT:</strong><br/> 
- <span>即将而立之年的反思
+ <span>kubernetes1.9.4安装(2)
 </span>
 </a>
 </div>
@@ -155,7 +151,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#flag"><span class="toc-number">1.</span> <span class="toc-text">flag</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#不带arg的bool"><span class="toc-number">1.1.</span> <span class="toc-text">不带arg的bool</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#打印flag的默认值"><span class="toc-number">1.2.</span> <span class="toc-text">打印flag的默认值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FlagSet的复用"><span class="toc-number">1.3.</span> <span class="toc-text">FlagSet的复用</span></a></li></ol></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ALL"><span class="toc-number">1.</span> <span class="toc-text">ALL</span></a></li></ol>
   </div>
 
 <div id="asidepart">
