@@ -4,14 +4,14 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>移动互联网相关性能(1) | Xy-Home</title>
+    <title>埃及游{1} | Xy-Home</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="xiaoy">
     
-    <meta name="description" content="序APP的访问速度一直都是大家非常关注的一个点，而近期因为某些原因投入比较多的精力在这上面，所以记录下相关心得。
-一笔带过的前期优化刚接需要优化的项目时，APP平时不算非常卡，但是一旦遇到高峰期就卡得无法访问。我们通过修改整体架构，切割并分布各系统，让APP恢复到正常速度的水平。
-恩，这时候问题来了">
+    <meta name="description" content="序事实上，旅游了这么多年，我还从未写过完整的游记。但是随着时间的逐步推移，很多的地点已经逐步淡出了我的记忆。
+记录下来的🇪🇬将是一个新的记忆的起点。
+埃及在我的认知里是一个神奇的地方，从小时候书籍上的金字塔未解之谜，到长大后研究的四大文明古国之一的历史，无不令人对一个拥有5000年历史的古国产生">
     
     
     
@@ -71,15 +71,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/04/10/移动互联网相关性能-1/" title="移动互联网相关性能(1)" itemprop="url">移动互联网相关性能(1)</a>
+      <a href="/2018/05/08/egypt-1/" title="埃及游{1}" itemprop="url">埃及游{1}</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://www.xiaoy.name" title="xiaoy">xiaoy</a>
     </p>
   <p class="article-time">
-    <time datetime="2015-04-10T11:04:01.000Z" itemprop="datePublished">2015-04-10</time>
-    Updated:<time datetime="2017-09-19T15:14:02.000Z" itemprop="dateModified">2017-09-19</time>
+    <time datetime="2018-05-08T13:40:27.000Z" itemprop="datePublished">2018-05-08</time>
+    Updated:<time datetime="2018-05-12T13:39:39.509Z" itemprop="dateModified">2018-05-12</time>
     
   </p>
 </header>
@@ -89,61 +89,82 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#序"><span class="toc-number">1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一笔带过的前期优化"><span class="toc-number">2.</span> <span class="toc-text">一笔带过的前期优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#用户的环境"><span class="toc-number">3.</span> <span class="toc-text">用户的环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#WIFI"><span class="toc-number">3.1.</span> <span class="toc-text">WIFI</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#频段"><span class="toc-number">3.1.1.</span> <span class="toc-text">频段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#负载对性能的影响"><span class="toc-number">3.1.2.</span> <span class="toc-text">负载对性能的影响</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#总结"><span class="toc-number">3.1.3.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#序"><span class="toc-number">1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#准备阶段"><span class="toc-number">2.</span> <span class="toc-text">准备阶段</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#粗发"><span class="toc-number">3.</span> <span class="toc-text">粗发</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#抵达"><span class="toc-number">4.</span> <span class="toc-text">抵达</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#前往亚历山大"><span class="toc-number">5.</span> <span class="toc-text">前往亚历山大</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#庞贝柱"><span class="toc-number">6.</span> <span class="toc-text">庞贝柱</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#地中海"><span class="toc-number">7.</span> <span class="toc-text">地中海</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#抵达GIZA"><span class="toc-number">8.</span> <span class="toc-text">抵达GIZA</span></a></li></ol>
 		</div>
 		
-		<h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>APP的访问速度一直都是大家非常关注的一个点，而近期因为某些原因投入比较多的精力在这上面，所以记录下相关心得。</p>
-<h2 id="一笔带过的前期优化"><a href="#一笔带过的前期优化" class="headerlink" title="一笔带过的前期优化"></a>一笔带过的前期优化</h2><p>刚接需要优化的项目时，APP平时不算非常卡，但是一旦遇到高峰期就卡得无法访问。<br>我们通过修改整体架构，切割并分布各系统，让APP恢复到正常速度的水平。</p>
-<p>恩，这时候问题来了，通过自己使用、基调统计等，发现在同一时间点，有些用户访问快，有些用户访问慢，因而统计了下相关可能影响性能的因素：</p>
-<ul>
-<li>用户端的网络影响很大，例如4G、WIFI、3G与2G，有时候真的就是两个世界的感觉</li>
-<li>不同地区的访问速度差别，服务器是挂在北京多线机房里的，总归有些地区访问比较慢</li>
-<li>服务器负载不均导致的部分情况等的相关影响</li>
-<li>首次DNS解析导致的速度慢，因为不同业务节点都有各自的二级域名，因此很多时候DNS缓存都是首次缓存，特别是一些访问率较低的地区，DNS几乎都得递归查询</li>
-</ul>
-<p>我们做了一些事情来优化相关的项，例如</p>
-<ul>
-<li>不同网络返回不同大小的图片及内容(很早就这样做了)</li>
-<li>采用第三方的图片服务来使用他们的CDN</li>
-<li>换个稳定点的机房 </li>
-<li>通过下发ip:端口列表来做到类似提前解析DNS的方式</li>
-<li>将服务做成可分布的，分布到多台机子上来进行多机多服务负载，以便更加地平均流量</li>
-</ul>
-<p>做完这些事情后，依然在有些情况下卡卡卡卡卡卡……<br>so，就有了下面的一些事情</p>
-<h2 id="用户的环境"><a href="#用户的环境" class="headerlink" title="用户的环境"></a>用户的环境</h2><p>想了想，还是按照整理完的流程来记录比较不容易混乱和前后跳来跳去～<br>首先，我们从用户的环境入手，一般情况下，移动互联网的用户主要访问都是来自于：WIFI、2G、3G、4G（排名不分先后）</p>
-<h3 id="WIFI"><a href="#WIFI" class="headerlink" title="WIFI"></a>WIFI</h3><p>一般说到wifi，很多朋友就会说，wifi肯定速度很快啦，如果有问题肯定是服务端问题…..[泪]<br>应该说我们需要知道一些东东：<br>无线路由器上的网速指的是理想情况下的网速，也就是频段都是它的，噪声是木有的，发射功率最大、位置最优，调制算法最优</p>
-<h4 id="频段"><a href="#频段" class="headerlink" title="频段"></a>频段</h4><p>我们知道wifi一般分为2.4GHz频段和5GHz频段。<br>2.4GHz的频段有三个不重叠的20MHz信道，也就是1、6、11，用无线网络信道检测软件我们可以很容易地看到。<br>经常我们还可以看到附近十几台路由器有三分之一和我们的信道是重叠的，so～这意味着什么呢，要知道这种冲突算临频冲突！<br>也就是说，你家的无线路由器其实会被其它人所干扰～，也就是说，隔壁的童鞋用重叠的信道看电影的话，你家的无线路由器的带宽居然可能无法发送数据～～～<br>恩，所以我入了5GHz的路由器～，虽然反射和衍射能力变差了，但是大多数情况下，不产生冲突还是更舒服的。</p>
-<h4 id="负载对性能的影响"><a href="#负载对性能的影响" class="headerlink" title="负载对性能的影响"></a>负载对性能的影响</h4><p>有线下使用的机制—冲突检测(Collision Detection)机制：发送方A检测到信道空闲了，发送数据，B也检测到空闲也发了，结果冲突了，在发送过程中就检测到冲突，所以进行指数等待重发<br>wifi下使用的机制—冲突避免(Collision Avoidance)机制：发送方A发送信号通知接收方发送忙碌广播，B检测到广播后不再发送数据，进行指数等待重发。<br>但是，临频的情况下，接收方是无法理解临频发出的忙碌广播的，这种方式应该说会非常影响高负载情况下的性能，所以，高负载情况下的无线路由器很容易性能不稳定。</p>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><ul>
-<li>频段是有限的，随着无线路由器越来越泛滥，信道的冲突已经是必然的了，不过暂时5GHz还是个不错的选择，国家应该也会逐步开放5GHz的更多频段</li>
-<li>无线很容易因为信噪比、位置而导致带宽变化</li>
-<li>冲突避免机制很容易导致非常多的冲突，不过由于wifi的物理层和数据链路层有自己的重发和纠错机制，所以上层无法感知</li>
-<li>wifi会使得首跳延迟无法保证，而使用无线网桥因为多了一跳，延迟时间就更难保证了</li>
-<li>总而言之，在wifi热点多的地方用有线还是对延迟有要求的人的首选～虽然不适用于移动互联网</li>
-</ul>
-<p>wifi相关差不多就是这样子了，结论就是，还真没办法做什么优化，只能说客户端可以根据请求速度来进行图片流视频流大小的选择。</p>
-<p><strong>以上内容仅为经验上的一些整理，如有错误烦请通知下，让我有机会修改下知识误区～</strong></p>
-<p>Authors: xiaoy <a href="&#109;&#97;&#x69;&#x6c;&#116;&#x6f;&#58;&#x7a;&#x73;&#49;&#51;&#55;&#57;&#x40;&#x71;&#x71;&#x2e;&#x63;&#x6f;&#x6d;">&#x7a;&#x73;&#49;&#51;&#55;&#57;&#x40;&#x71;&#x71;&#x2e;&#x63;&#x6f;&#x6d;</a></p>
+		<h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>事实上，旅游了这么多年，我还从未写过完整的游记。但是随着时间的逐步推移，很多的地点已经逐步淡出了我的记忆。</p>
+<p>记录下来的🇪🇬将是一个新的记忆的起点。</p>
+<p>埃及在我的认知里是一个神奇的地方，从小时候书籍上的金字塔未解之谜，到长大后研究的四大文明古国之一的历史，无不令人对一个拥有5000年历史的古国产生深深的探索欲。</p>
+<h2 id="准备阶段"><a href="#准备阶段" class="headerlink" title="准备阶段"></a>准备阶段</h2><p>关于跟团与自由行。一直以来我都习惯于自由行，贪恋那种喜欢一个地方就默默窝久一些的感觉，无拘无束没有太多计划，虽然不是很愿意把精力分到行程和订票等上面。而跟团游，好处就在于什么都不用想，但是坏处更明显，时间的选择很难受到自己的把控。</p>
+<p>埃及在外交部的公众号上算不上特别稳定安全的国家，去之前的4月14号，又宣布了进入三个月的紧急状态，使得我一度觉得行程有可能被取消。。。。而不稳定和拒绝非团队游的落地签也是这次选择团队游的一大原因。</p>
+<h2 id="粗发"><a href="#粗发" class="headerlink" title="粗发"></a>粗发</h2><p>27号带上装着零零散散各种物品的行李箱和背包踏上了前往北京转机的路，转机之路说多了都是泪。</p>
+<p><img src="http://image.xiaoy.name/IMG_1652.jpg" width="100%" height="100%"></p>
+<p><img src="http://image.xiaoy.name/IMG_1653.jpg" width="100%" height="100%"></p>
+<p>拿上了登机牌，埃航的这架777一开始我觉得和787体验差好多，有点吐槽的冲动，回来那天坐了更破的一架才发现，这架已经算很好了。。。。</p>
+<h2 id="抵达"><a href="#抵达" class="headerlink" title="抵达"></a>抵达</h2><p><img src="http://image.xiaoy.name/WechatIMG315.jpeg" width="100%" height="100%"></p>
+<p>由于夏令时，埃及和国内时差六个小时，因此我们抵达的时候差不多凌晨四五点？睡得一脸懵逼的我表示真的已经搞不清时间了，只记得没有在飞机上看到日出。</p>
+<p>开罗机场占地面积应该算是灰常广的，但是沿路没看到多少飞机，只感觉到飞机滑行了N久。</p>
+<p><img src="http://image.xiaoy.name/IMG_4746.JPG" width="100%" height="100%"></p>
+<p>可能是因为跟团游的原因，并未受到什么奇怪的要小费或者什么特殊对待，很爽快的过了埃及的海关。</p>
+<p>接机的是地导的助理，看来可能和传说中的一样埃及是属于等级比较森严的国家，而地导在外面大巴出等着我们。</p>
+<p><img src="http://image.xiaoy.name/WechatIMG316.jpeg" width="100%" height="100%"></p>
+<p><img src="http://image.xiaoy.name/WechatIMG317.jpeg" width="100%" height="100%"></p>
+<p>上了出口处的大巴，第一次见到了我们的地导亚瑟王，说着很6666的中文，恩，6666的中文指的是各种国内的段子随手拈来。。。。</p>
+<p>亚瑟王告知我们因为航班抵达时间比较早，因此更改行程，先乘车前往亚历山大游览，省得第二天需要早起去亚历山大。</p>
+<h2 id="前往亚历山大"><a href="#前往亚历山大" class="headerlink" title="前往亚历山大"></a>前往亚历山大</h2><p>说起亚历山大，它的图书馆应该是我最深刻的印象，建于公元前三世纪的它，通过各种手段收集一切书籍，成为了当时世界上最大的综合性图书馆，聚集无数大牛学者，写出几何原本的欧几里得、阿基米德等等等。对于爱书之人无疑是一个圣地，可惜已经被摧毁了，虽然新建的图书馆很宏伟，却已经无法挽回逝去的感觉了。而且据说我最喜欢的博物馆的英文单词(museum)就是来源于这个图书馆的名字(Mouseion)。</p>
+<p><img src="http://image.xiaoy.name/0X9A6335.jpg" width="100%" height="100%"></p>
+<p>前往亚历山大的高速路上，第一次见识到埃及的小沙尘暴天气，还好高速没封路。</p>
+<p><img src="http://image.xiaoy.name/0X9A6338.jpg" width="100%" height="100%"></p>
+<p>高速中途的休息站，亚瑟王每天都要提起七八次的大家去上洗手间，绝对是尿频患者的福音。。。乘坐的大巴外观很有埃及特色，虽然是中国宇通产的。而运气很好的，此时的天空已经恢复蓝天白云了，温度也挺适宜的。</p>
+<h2 id="庞贝柱"><a href="#庞贝柱" class="headerlink" title="庞贝柱"></a>庞贝柱</h2><p>来亚历山大之前其实并不清楚这个地方，一听名字以为说的是古罗马将军庞贝，结果听介绍不是。。。回来一查据说是(十字军误以为是庞贝的墓地/旅行者起名)，也不知道哪个是真哪个是假，而且这又是一处被基督教徒所摧毁的神庙。</p>
+<p><img src="http://image.xiaoy.name/0X9A6341.jpg" width="100%" height="100%"></p>
+<p>一群闲适的猫咪，左侧那只毛炸得很有特色XD。</p>
+<p><img src="http://image.xiaoy.name/0X9A6345.jpg" width="100%" height="100%"></p>
+<p>留个到此一游照，实在提不起太大的兴趣。</p>
+<p><img src="http://image.xiaoy.name/0X9A6355.jpg" width="100%" height="100%"></p>
+<p>台阶下应该是神庙的遗址，可惜已经残破到一定程度了。唯有散落的雕塑能让人知道它曾经也是一处人潮汹涌的地方。</p>
+<h2 id="地中海"><a href="#地中海" class="headerlink" title="地中海"></a>地中海</h2><p><img src="http://image.xiaoy.name/0X9A6356.jpg" width="100%" height="100%"></p>
+<p><img src="http://image.xiaoy.name/0X9A6376.jpg" width="100%" height="100%"></p>
+<p>拥挤的小面包车是埃及的小公交，据说是直接招手说出要去的目的地，司机如果是同一路的就会停车载客，在开罗和亚历山大真的是随处可见。</p>
+<p><img src="http://image.xiaoy.name/0X9A6359.jpg" width="100%" height="100%"></p>
+<p>排练的卫兵，埃及的总统第二天将到亚历山大演讲。</p>
+<p><img src="http://image.xiaoy.name/0X9A6360.jpg" width="100%" height="100%"></p>
+<p>亚瑟王请我们吃冰淇淋，下车在地中海的沿岸吃着冰淇淋晃悠晃悠，虽然每次吃冰的都会导致肚子不舒服，我依然作死地尝试了，确实挺好吃的O(∩_∩)O~。</p>
+<p><img src="http://image.xiaoy.name/0X9A6362.jpg" width="100%" height="100%"></p>
+<p><img src="http://image.xiaoy.name/0X9A6363.jpg" width="100%" height="100%"></p>
+<p><img src="http://image.xiaoy.name/0X9A6364.jpg" width="100%" height="100%"></p>
+<p><img src="http://image.xiaoy.name/0X9A6373.jpg" width="100%" height="100%"></p>
+<p>极具魅力的地中海，浪大风却很舒适，岸边休息的人们、海钓的大叔、一个靠着桨摇着木船在大浪中上上下下的船夫，一幅慵懒和狂暴融合的画卷。</p>
+<p><img src="http://image.xiaoy.name/0X9A6383.jpg" width="100%" height="100%"></p>
+<p><img src="http://image.xiaoy.name/0X9A6386.jpg" width="100%" height="100%"></p>
+<p>远远的希腊风格神庙估计会是我对夏宫的唯一印象了，因为毫无疑问，对夏宫这类的事物一向没有太多的感觉，而且已经是近代的建筑了，对于一个南方人而言实在挺稀疏平常的。</p>
+<h2 id="抵达GIZA"><a href="#抵达GIZA" class="headerlink" title="抵达GIZA"></a>抵达GIZA</h2><p><img src="http://image.xiaoy.name/0X9A6402.jpg" width="100%" height="100%"></p>
+<p><img src="http://image.xiaoy.name/0X9A6411.jpg" width="100%" height="100%"></p>
+<p>对金字塔的第一印象，左侧是胡夫的，右侧是儿子哈夫拉的，外表已经风化剥落到一定程度了，只能想象当时的人们看到的阳光下焕发着绚烂金色光芒的金字塔。</p>
+<p><img src="http://image.xiaoy.name/0X9A6413.jpg" width="100%" height="100%"></p>
+<p>酒店门口设置着警察关卡及防爆犬?对埃及的安全局势有了第一感觉，也对他们对旅游业的重视或者对游客安全的重视有了一定认识。</p>
+<p>考虑到出外不是很安全，于是在酒店与新认识的朋友喝了杯干啤就回去补觉了，对第二天的金字塔近距离接触保持着巨大的期待，只希望时间流逝得更快一些。</p>
+<p>以上文字仅为写下时的认知，可能有所遗漏错误，望包涵。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/性能/">性能</a>
+  <span></span> <a href="/tags/埃及/">埃及</a>
   </div>
 
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/性能/">性能</a>
+  <a class="article-category-link" href="/categories/旅游/">旅游</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="http://www.xiaoy.name/2015/04/10/移动互联网相关性能-1/" data-title="移动互联网相关性能(1) | Xy-Home" data-tsina="1188724621" class="share clearfix">
+  <div data-url="http://www.xiaoy.name/2018/05/08/egypt-1/" data-title="埃及游{1} | Xy-Home" data-tsina="1188724621" class="share clearfix">
   </div>
 
 </div>
@@ -152,14 +173,14 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2015/04/11/移动互联网相关性能-2/" title="移动互联网相关性能(2)">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  移动互联网相关性能(2)</span>
+
+<div class="next">
+<a href="/2018/03/22/20180322/"  title="kubernetes1.9.4安装(3)">
+ <strong>NEXT:</strong><br/> 
+ <span>kubernetes1.9.4安装(3)
+</span>
 </a>
 </div>
-
 
 </nav>
 
@@ -173,7 +194,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#序"><span class="toc-number">1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一笔带过的前期优化"><span class="toc-number">2.</span> <span class="toc-text">一笔带过的前期优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#用户的环境"><span class="toc-number">3.</span> <span class="toc-text">用户的环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#WIFI"><span class="toc-number">3.1.</span> <span class="toc-text">WIFI</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#频段"><span class="toc-number">3.1.1.</span> <span class="toc-text">频段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#负载对性能的影响"><span class="toc-number">3.1.2.</span> <span class="toc-text">负载对性能的影响</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#总结"><span class="toc-number">3.1.3.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#序"><span class="toc-number">1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#准备阶段"><span class="toc-number">2.</span> <span class="toc-text">准备阶段</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#粗发"><span class="toc-number">3.</span> <span class="toc-text">粗发</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#抵达"><span class="toc-number">4.</span> <span class="toc-text">抵达</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#前往亚历山大"><span class="toc-number">5.</span> <span class="toc-text">前往亚历山大</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#庞贝柱"><span class="toc-number">6.</span> <span class="toc-text">庞贝柱</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#地中海"><span class="toc-number">7.</span> <span class="toc-text">地中海</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#抵达GIZA"><span class="toc-number">8.</span> <span class="toc-text">抵达GIZA</span></a></li></ol>
   </div>
 
 <div id="asidepart">
