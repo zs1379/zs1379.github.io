@@ -4,14 +4,13 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>关于k8s v1.9的iptables问题 | Xy-Home</title>
+    <title>随想 | Xy-Home</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="xiaoy">
     
-    <meta name="description" content="ALL在启动kube-proxy后报以下错误，具体表现为proxy工作不正常。
-1Failed to execute iptables-restore for nat: exit status 1 (iptables-restore: line 7 failed)
-查明原因是centos下v1.4版">
+    <meta name="description" content="未来趁着周末回家休息，把超级工程第二季给看完了，恩，感想就是虽然是报喜不报忧，并且忽略掉各种内部的问题，但是仅看大局和成果，依然能让人热血沸腾，恨不得参与到其中去。
+冷静下来后不禁在思考，后期的发展会是啥样的呢？中国高铁建到2025年覆盖99.99%地方后这些建设能力释放到哪里呢？新的交通方式的建设">
     
     
     
@@ -71,15 +70,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2018/03/20/20180320/" title="关于k8s v1.9的iptables问题" itemprop="url">关于k8s v1.9的iptables问题</a>
+      <a href="/2018/05/21/20180521/" title="随想" itemprop="url">随想</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://www.xiaoy.name" title="xiaoy">xiaoy</a>
     </p>
   <p class="article-time">
-    <time datetime="2018-03-20T01:48:22.000Z" itemprop="datePublished">2018-03-20</time>
-    Updated:<time datetime="2018-03-20T02:07:00.644Z" itemprop="dateModified">2018-03-20</time>
+    <time datetime="2018-05-21T03:18:38.000Z" itemprop="datePublished">2018-05-21</time>
+    Updated:<time datetime="2018-05-21T03:33:38.747Z" itemprop="dateModified">2018-05-21</time>
     
   </p>
 </header>
@@ -89,39 +88,38 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ALL"><span class="toc-number">1.</span> <span class="toc-text">ALL</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#未来"><span class="toc-number">1.</span> <span class="toc-text">未来</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#芯片"><span class="toc-number">2.</span> <span class="toc-text">芯片</span></a></li></ol>
 		</div>
 		
-		<h2 id="ALL"><a href="#ALL" class="headerlink" title="ALL"></a>ALL</h2><p>在启动kube-proxy后报以下错误，具体表现为proxy工作不正常。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Failed to execute iptables-restore for nat: exit status 1 (iptables-restore: line 7 failed)</div></pre></td></tr></table></figure>
-<p>查明原因是centos下v1.4版本的iptables并未支持-w参数，于是升级至v1.6版本。</p>
-<p>重启报新的错误</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Failed to execute iptables-restore: exit status 1 (iptables-restore: invalid option -- &apos;5&apos;</div><div class="line">Try `iptables-restore -h&apos; for more information.</div></pre></td></tr></table></figure>
-<p>依然有不支持的命令列表，查看源码发现是pkg/util/iptables/iptables.go中的123行开始的一段</p>
-<figure class="highlight golang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Minimum iptables versions supporting the -w and -w&lt;seconds&gt; flags</span></div><div class="line"><span class="keyword">const</span> WaitMinVersion = <span class="string">"1.4.20"</span></div><div class="line"><span class="keyword">const</span> WaitSecondsMinVersion = <span class="string">"1.4.22"</span></div><div class="line"><span class="keyword">const</span> WaitString = <span class="string">"-w"</span></div><div class="line"><span class="keyword">const</span> WaitSecondsString = <span class="string">"-w5"</span></div></pre></td></tr></table></figure>
-<p>-w5并不被支持，试了一下-w 5是被支持的，在master分支看到代码居然和v1.9是不一样的，找了下对应的补丁</p>
-<p><a href="https://github.com/andrewhowdencom/kubernetes/commit/36a71f8e52e73a8fd27b84f854dfcabd5b9ce1b6" target="_blank" rel="external">https://github.com/andrewhowdencom/kubernetes/commit/36a71f8e52e73a8fd27b84f854dfcabd5b9ce1b6</a></p>
-<p>合并到1.9分支重新编译出来，恢复正常。</p>
+		<h2 id="未来"><a href="#未来" class="headerlink" title="未来"></a>未来</h2><p>趁着周末回家休息，把超级工程第二季给看完了，恩，感想就是虽然是报喜不报忧，并且忽略掉各种内部的问题，但是仅看大局和成果，依然能让人热血沸腾，恨不得参与到其中去。</p>
+<p>冷静下来后不禁在思考，后期的发展会是啥样的呢？中国高铁建到2025年覆盖99.99%地方后这些建设能力释放到哪里呢？新的交通方式的建设还是现有交通方式的进一步升级？现在借给对方钱也要往国外建设是否有一部分也是为此而考虑的？而自动化的不断引入，就如同码头的自动化、运输的自动化、分拣的自动化、建造的自动化……是否会让一批新的工人所失业呢？新的一个让工人涌入的地方到底在哪里，服务业是一个，剩下的还有什么呢？</p>
+<p>科技改变世界，随着自动化的不断推进，需要程序员的地方越来越多，已经变为各行业的一种新的基础工种了，即使是工业的那一套也是有挺多的可以优化的地方。程序员的需求不断增大，是否也会引发自我革命，也是个很大的命题，只希望不要在这波潮流中失去方向。</p>
+<h2 id="芯片"><a href="#芯片" class="headerlink" title="芯片"></a>芯片</h2><p>最近中兴被制裁的那个事件，虽然最后大家各自让步解决了，但是也给我们再次提了个醒。说实话作为当前世界分工合作的模式，大家各自做一部分再进行总装是再正常不过的事情了，虽然核心技术不在我们手上，也不用太过吐槽。但是经历过这个事件后，估计要重复造轮子以便安心，对程序员也是一个利好。</p>
+<p>关于芯片的分析已经很多了，不想再多说，但是个人认为芯片这些个除了专利问题之外，最主要还是它所牵扯的一堆基于它开发的企业了，也就是生态圈，绕过专利与之对比起来反而比较容易。中国想从这方面去追赶我觉得还是有挺大难度的，但是不排除财大气粗的阿里真能搞成。</p>
+<p>我个人比较看好的还是弯道超车，就如同软件设计中的中间层一般，桌面代表的浏览器时代只要足够成熟，用户并不会去关心底层的架构，网页的开发与底层也是有着中间层的，也就绕开了生态圈。就如同曾经有人做windows到android端应用的移植，理论上只要移植的方式足够方便，新的一款系统也并非不可能与android和ios并存，同理芯片也并非不可能绕过当前的专利。</p>
+<p>当然，这些可能都需要很长一段时间，甚至可能因为量子计算的出现、网络的升级，导致计算力的暴增，超瘦客户端重新开始流行，导致新的一轮生态圈的建设，毕竟我们现在常用的软件还是偏少的，虽然可选择的很多。</p>
+<hr>
+<p>以上文字仅为写下时的认知，可能有所遗漏错误，望包涵。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/k8s/">k8s"</a>
+  <span></span> <a href="/tags/日常/">日常</a>
   </div>
 
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/问题记录/">问题记录</a>
+  <a class="article-category-link" href="/categories/日常/">日常</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="http://www.xiaoy.name/2018/03/20/20180320/" data-title="关于k8s v1.9的iptables问题 | Xy-Home" data-tsina="1188724621" class="share clearfix">
+  <div data-url="http://www.xiaoy.name/2018/05/21/20180521/" data-title="随想 | Xy-Home" data-tsina="1188724621" class="share clearfix">
   </div>
 
 </div>
@@ -130,19 +128,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2018/03/22/20180322/" title="kubernetes1.9.4安装(3)">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  kubernetes1.9.4安装(3)</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2018/03/17/201703171/"  title="kubernetes1.9.4安装(2)">
+<a href="/2018/05/12/egypt-2/"  title="埃及游{2}">
  <strong>NEXT:</strong><br/> 
- <span>kubernetes1.9.4安装(2)
+ <span>埃及游{2}
 </span>
 </a>
 </div>
@@ -159,7 +149,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ALL"><span class="toc-number">1.</span> <span class="toc-text">ALL</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#未来"><span class="toc-number">1.</span> <span class="toc-text">未来</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#芯片"><span class="toc-number">2.</span> <span class="toc-text">芯片</span></a></li></ol>
   </div>
 
 <div id="asidepart">
