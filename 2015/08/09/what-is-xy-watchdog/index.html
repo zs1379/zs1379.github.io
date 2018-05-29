@@ -38,7 +38,7 @@
 				<h1 class="site-name"><a href="/" title="Xy-Home">Xy-Home</a></h1>
 				<h2 class="blog-motto">依然对blog各种无爱，还是单纯记录吧～</h2>
 			</div>
-			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
 			</a></div>
 			<nav class="animated">
 				<ul>
@@ -52,7 +52,7 @@
 					
 					<form class="search" action="//baidu.com/s" method="get" accept-charset="utf-8">
 						<label>Search</label>
-						<input type="text" id="search" name="wd" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="text" id="search" name="wd" autocomplete="off" maxlength="20" placeholder="搜索" />
                         <input name=tn type=hidden value="bds">
                         <input name=cl type=hidden value="3">
                         <input name=ct type=hidden value="2097152">
@@ -79,7 +79,7 @@
     </p>
   <p class="article-time">
     <time datetime="2015-08-09T13:21:17.000Z" itemprop="datePublished">2015-08-09</time>
-    Updated:<time datetime="2017-05-02T06:24:45.000Z" itemprop="dateModified">2017-05-02</time>
+    更新日期:<time datetime="2017-05-02T06:24:45.000Z" itemprop="dateModified">2017-05-02</time>
     
   </p>
 </header>
@@ -88,7 +88,7 @@
 		
 		
 		<div id="toc" class="toc-article">
-			<strong class="toc-title">Contents</strong>
+			<strong class="toc-title">文章目录</strong>
 		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#场景"><span class="toc-number">1.</span> <span class="toc-text">场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#go版watchdog"><span class="toc-number">2.</span> <span class="toc-text">go版watchdog</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#shell的统一"><span class="toc-number">2.1.</span> <span class="toc-text">shell的统一</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置文件"><span class="toc-number">2.2.</span> <span class="toc-text">配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#补充"><span class="toc-number">2.3.</span> <span class="toc-text">补充</span></a></li></ol></li></ol>
 		</div>
 		
@@ -115,7 +115,7 @@
 <li>线上环境中出现过ps命令无法匹配到进程的情况，或者进程已经结束的情况，暂时未明白是什么原因，有知道的希望告知下~，因为此原因，watchdog不适用于需要保证进程的唯一性的场景。</li>
 <li>由于存在一种情况，就是shell写入pid文件的同时watchdog去读取pid文件，因为是非原子性的操作，因此可能会出现问题。不想使用锁等方式，因此采用较为简单的重试机制，一旦读到空时间戳，就休眠10毫秒，最多重试3次</li>
 </ul>
-<p>Authors: xiaoy <a href="&#109;&#97;&#x69;&#x6c;&#116;&#x6f;&#x3a;&#122;&#x73;&#x31;&#x33;&#x37;&#57;&#x40;&#113;&#x71;&#46;&#x63;&#111;&#x6d;">&#122;&#x73;&#x31;&#x33;&#x37;&#57;&#x40;&#113;&#x71;&#46;&#x63;&#111;&#x6d;</a></p>
+<p>Authors: xiaoy <a href="&#x6d;&#x61;&#105;&#108;&#116;&#111;&#58;&#x7a;&#115;&#49;&#x33;&#x37;&#x39;&#x40;&#113;&#x71;&#46;&#x63;&#111;&#109;">&#x7a;&#115;&#49;&#x33;&#x37;&#x39;&#x40;&#113;&#x71;&#46;&#x63;&#111;&#109;</a></p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -169,20 +169,20 @@
 </section>
 
 </div>  
-      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
 
   <div id="toc" class="toc-aside">
-  <strong class="toc-title">Contents</strong>
+  <strong class="toc-title">文章目录</strong>
   <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#场景"><span class="toc-number">1.</span> <span class="toc-text">场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#go版watchdog"><span class="toc-number">2.</span> <span class="toc-text">go版watchdog</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#shell的统一"><span class="toc-number">2.1.</span> <span class="toc-text">shell的统一</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置文件"><span class="toc-number">2.2.</span> <span class="toc-text">配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#补充"><span class="toc-number">2.3.</span> <span class="toc-text">补充</span></a></li></ol></li></ol>
   </div>
 
 <div id="asidepart">
-<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
 <aside class="clearfix">
 
   
 <div class="categorieslist">
-	<p class="asidetitle">Categories</p>
+	<p class="asidetitle">分类</p>
 		<ul>
 		
 			<li><a href="/categories/go/" title="go">go<sup>1</sup></a></li>
@@ -197,7 +197,7 @@
 		
 			<li><a href="/categories/性能/" title="性能">性能<sup>3</sup></a></li>
 		
-			<li><a href="/categories/旅游/" title="旅游">旅游<sup>3</sup></a></li>
+			<li><a href="/categories/旅游/" title="旅游">旅游<sup>4</sup></a></li>
 		
 			<li><a href="/categories/日常/" title="日常">日常<sup>6</sup></a></li>
 		
@@ -211,7 +211,7 @@
 
   
 <div class="tagslist">
-	<p class="asidetitle">Tags</p>
+	<p class="asidetitle">标签</p>
 		<ul class="clearfix">
 		
 			<li><a href="/tags/go/" title="go">go<sup>1</sup></a></li>
@@ -226,7 +226,7 @@
 		
 			<li><a href="/tags/协议/" title="协议">协议<sup>1</sup></a></li>
 		
-			<li><a href="/tags/埃及/" title="埃及">埃及<sup>3</sup></a></li>
+			<li><a href="/tags/埃及/" title="埃及">埃及<sup>4</sup></a></li>
 		
 			<li><a href="/tags/性能/" title="性能">性能<sup>3</sup></a></li>
 		
@@ -242,16 +242,16 @@
 
   
   <div class="archiveslist">
-    <p class="asidetitle"><a href="/archives">Archives</a></p>
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a><span class="archive-list-count">3</span></li></ul>
+    <p class="asidetitle"><a href="/archives">归档</a></p>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a><span class="archive-list-count">3</span></li></ul>
   </div>
 
 
   
   <div class="tagcloudlist">
-    <p class="asidetitle">Tag Cloud</p>
+    <p class="asidetitle">标签云</p>
     <div class="tagcloudlist clearfix">
-       <a href="/tags/go/" style="font-size: 10px;">go</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/java/" style="font-size: 13.33px;">java</a> <a href="/tags/k8s/" style="font-size: 16.67px;">k8s</a> <a href="/tags/k8s/" style="font-size: 13.33px;">k8s"</a> <a href="/tags/协议/" style="font-size: 10px;">协议</a> <a href="/tags/埃及/" style="font-size: 16.67px;">埃及</a> <a href="/tags/性能/" style="font-size: 16.67px;">性能</a> <a href="/tags/日常/" style="font-size: 20px;">日常</a> <a href="/tags/架构/" style="font-size: 16.67px;">架构</a> <a href="/tags/网络/" style="font-size: 13.33px;">网络</a>
+       <a href="/tags/go/" style="font-size: 10px;">go</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/java/" style="font-size: 12.5px;">java</a> <a href="/tags/k8s/" style="font-size: 15px;">k8s</a> <a href="/tags/k8s/" style="font-size: 12.5px;">k8s"</a> <a href="/tags/协议/" style="font-size: 10px;">协议</a> <a href="/tags/埃及/" style="font-size: 17.5px;">埃及</a> <a href="/tags/性能/" style="font-size: 15px;">性能</a> <a href="/tags/日常/" style="font-size: 20px;">日常</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/网络/" style="font-size: 12.5px;">网络</a>
     </div>
   </div>
 

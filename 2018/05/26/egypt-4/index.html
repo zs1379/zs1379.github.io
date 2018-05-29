@@ -4,13 +4,15 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>微服务实践-1 | Xy-Home</title>
+    <title>埃及游{4} | Xy-Home</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="xiaoy">
     
-    <meta name="description" content="序距离业务系统逐步替换为微服务已经接近9个月了，中间也是不断地碰到各种坑，不过也获得了各种实践经验，当然不仅仅是微服务相关的，包含了整个架构及人员的方方面面。
-趁着近期放松心情，把一些东西记录下~仅当做怀念（因为在测试docker上碰到各种纠结的事情，万分无力，趁着月底去参加CUNTCon大会前好好">
+    <meta name="description" content="上午今天的行程挺悠哉的，九点半才需要出发前往机场飞往阿斯旺。早上磨蹭到六点才起床，想了想还是下去健身房撸铁比较不会无聊。
+前往机场的路上，亚瑟王再次给了个坏消息，沙尘暴在阿斯旺肆虐，航班有延误的风险，但是具体要到机场才知道情况。
+
+机票是12点从开罗飞往阿斯旺的，但是抵达机场经过很麻烦的安检后，亚瑟">
     
     
     
@@ -70,15 +72,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/08/12/wei-fu-wu-1/" title="微服务实践-1" itemprop="url">微服务实践-1</a>
+      <a href="/2018/05/26/egypt-4/" title="埃及游{4}" itemprop="url">埃及游{4}</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://www.xiaoy.name" title="xiaoy">xiaoy</a>
     </p>
   <p class="article-time">
-    <time datetime="2015-08-12T13:59:20.000Z" itemprop="datePublished">2015-08-12</time>
-    更新日期:<time datetime="2017-03-17T06:41:05.000Z" itemprop="dateModified">2017-03-17</time>
+    <time datetime="2018-05-26T03:59:12.000Z" itemprop="datePublished">2018-05-26</time>
+    更新日期:<time datetime="2018-05-29T13:00:27.103Z" itemprop="dateModified">2018-05-29</time>
     
   </p>
 </header>
@@ -88,59 +90,84 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#序"><span class="toc-number">1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#壹"><span class="toc-number">2.</span> <span class="toc-text">壹</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#环境"><span class="toc-number">2.1.</span> <span class="toc-text">环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#契机"><span class="toc-number">2.2.</span> <span class="toc-text">契机</span></a></li></ol></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#上午"><span class="toc-number">1.</span> <span class="toc-text">上午</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#阿斯旺"><span class="toc-number">2.</span> <span class="toc-text">阿斯旺</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#菲莱神庙"><span class="toc-number">3.</span> <span class="toc-text">菲莱神庙</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#尼罗河"><span class="toc-number">4.</span> <span class="toc-text">尼罗河</span></a></li></ol>
 		</div>
 		
-		<h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>距离业务系统逐步替换为微服务已经接近9个月了，中间也是不断地碰到各种坑，不过也获得了各种实践经验，当然不仅仅是微服务相关的，包含了整个架构及人员的方方面面。</p>
-<p>趁着近期放松心情，把一些东西记录下~仅当做怀念（因为在测试docker上碰到各种纠结的事情，万分无力，趁着月底去参加CUNTCon大会前好好休息下- -）</p>
-<h2 id="壹"><a href="#壹" class="headerlink" title="壹"></a>壹</h2><h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><p>在上微服务之前，我们的服务端虽然访问量很大，却还是以一代架构混合着二代架构的模式跑着，虽然没出什么大问题，但是一切都显得岌岌可危。</p>
-<p>而从一个大系统到分布式的微服务，是一个非常大的改动，特别是还需要进行旧版本兼容的情况下(我们的服务端主要为APP访问的接口及多个后台系统)~</p>
-<p>这种改动对于产品、运营、推广等部分的KPI而言是看不见的，就如同我们的重构一般，因此推动肯定是非常困难的，不仅仅是技术上的阻力，而是来自于整个公司的一种压力。</p>
-<p>于是必然需要等待某些契机，在将分析报告发到老大邮箱后，我就开始做起前期的一些准备工作。</p>
-<p>所谓的分析报告其实真的只是分析，我也很难通过当时的系统取得瓶颈点，于是只能分析当前存在的问题及后果~ 但是问题如果没出现的话更像是一种危言耸听…特别是对于一个入职不到半年的人而言。</p>
-<p>当时的系统其实很容易就可以揪出一些问题(其实包括如今全微服务化的系统也一样，还是很多小问题待优化)：</p>
-<ul>
-<li>水平扩展的时候，需要堆硬件，因为不管是CPU密集或者内存密集型的，都在同个进程里，机器只能以最短的那根木板的承受能力来承受压力…</li>
-<li>单点的现象非常严重</li>
-<li>代码耦合已经到很极致的地步了，几乎无法拆分开，一个小业务挂掉可能影响整个系统</li>
-<li>开发人员在需求和bug下疲于奔命，整体流程不够清晰，很多业务需要靠查代码才能理解</li>
-<li>服务不够稳定，SLA已经掉到每天在高峰时期都可以看到APP必现的不稳定现象</li>
-</ul>
-<p>当时每次全量推送的时候，我们总是需要蹲在电脑前盯着监控，不知道何时服务就不行了….记忆深刻的有次在回家的车上拿出电脑处理高峰时期的线上问题….</p>
-<p>而趁着还没有变革的可能的时候，我按照当时的想法重写了一下自己写的一套专门针对APP-服务端的php框架(xy框架)，其中最主要的几项改变：</p>
-<ul>
-<li>取消了严格的REST风格，为了易用性</li>
-<li>将分布式的SOA调用封装到底层，让分布式调用与正常的service调用方式一致，让开发人员无碍地进行远程调用，将远程访问的错误处理、重试机制等在底层实现</li>
-<li>后期修改了下返回值的规范，让开发人员采用与GO语言一致的水平人为控制错误处理，而非异常(不过框架自身为了跨业务传递采用了异常机制)</li>
-</ul>
-<p>中间还发生了一些有趣的事情，像表决是否采用xy框架还是用其它的、大家一起讨论新的开发模式等，其实都很有纪念意义。</p>
-<h3 id="契机"><a href="#契机" class="headerlink" title="契机"></a>契机</h3><p>记得是在九月中旬的时候，随着用户不断增长，预期的问题开始逐步出现，先是高峰期业务的各种卡顿，于是我们天天待到12点、1点，就为了找出系统中的一些可优化点延缓崩溃的发生，那段时间也确实修正了不少优化上的问题，因为碰到了各种瓶颈，redis的单核限制、redis的内存、mysql的IO、慢程序等。</p>
-<p>但是该来的还是一样会来，某天APP直接各种无法使用，修复问题的速度还没问题冒出来的速度快，当时真的是千疮百孔的感觉….不过还好，问题的严重带来了修改的契机，与其说上微服务是一项架构上的大调整，其实当时对运营等来说更是对app的拯救…架构上的价值几乎可以忽略不计….</p>
-<p>不过不管怎么说，至少有了契机，虽然当时仅仅给了两周还是三周的开发时间。</p>
-<pre><code>休息下理下思路再继续写~
-</code></pre><hr>
-<p><strong>以上内容仅为经验上的一些整理，如有错误烦请通知下，让我有机会修改下知识误区～</strong></p>
-<p>Authors: xiaoy <a href="&#x6d;&#97;&#105;&#108;&#116;&#x6f;&#58;&#122;&#x73;&#x31;&#51;&#55;&#x39;&#x40;&#113;&#x71;&#46;&#x63;&#x6f;&#x6d;">&#122;&#x73;&#x31;&#51;&#55;&#x39;&#x40;&#113;&#x71;&#46;&#x63;&#x6f;&#x6d;</a></p>
+		<h2 id="上午"><a href="#上午" class="headerlink" title="上午"></a>上午</h2><p>今天的行程挺悠哉的，九点半才需要出发前往机场飞往阿斯旺。早上磨蹭到六点才起床，想了想还是下去健身房撸铁比较不会无聊。</p>
+<p>前往机场的路上，亚瑟王再次给了个坏消息，沙尘暴在阿斯旺肆虐，航班有延误的风险，但是具体要到机场才知道情况。</p>
+<p><img src="http://image.xiaoy.name/IMG_1693.jpg?imageMogr2/auto-orient" width="100%" height="100%"></p>
+<p>机票是12点从开罗飞往阿斯旺的，但是抵达机场经过很麻烦的安检后，亚瑟王探听完消息回来一脸无奈的说昨天下午五点飞阿斯旺的飞机都还没起飞~ 沙尘暴比想象中更严重一些。</p>
+<p>接着，我们被赶出了候机厅。。。因为候机厅满了没地方休息？在安检口外找地方刚坐下，再次被叫去安检，据说事情有转机，可以先拿票。。。因为是好消息才忍住了打亚瑟王一顿的心，虽然应该打不过。</p>
+<p>接着的事情出乎意料之外，几乎没晚点的我们居然进二次安检口了，在亚瑟王不可置信的情况下我们进了摆渡车上了飞机。跟随在一辆军机后面我们起飞了，但是快飞到阿斯旺的时候我才发现沙尘暴并未完全过去，我们可能是属于空隙期起飞的，并且不巧遇到了它。</p>
+<p><img src="http://image.xiaoy.name/0X9A6784.jpg" width="100%" height="100%"></p>
+<p>在飞行员的重降之下，以各种持续失重的感觉在一片掌声中抵达了阿斯旺，看图片也能感受到疯狂的沙尘，从摆渡车到机场抵达厅不到几秒的距离，让我全身包括耳朵里都进了沙子。。。还好在等行李的时候沙尘暴过去，蓝天白云重归我们。</p>
+<h2 id="阿斯旺"><a href="#阿斯旺" class="headerlink" title="阿斯旺"></a>阿斯旺</h2><p>阿斯旺的第一站是大坝，以及一个纪念苏埃友谊的纪念碑。因为刚受完沙尘暴的摧残，又被高温致懵，完全没心情去看，可能也有看过三峡的原因。</p>
+<p>午餐在车上匆匆解决，逛完没啥意思的水坝后，前往这么多天来第一个神庙，菲莱神庙，虽然是托密勒时代的，但是好歹也是神庙。</p>
+<p><img src="http://image.xiaoy.name/0X9A6794.jpg" width="100%" height="100%"></p>
+<p>新水坝修建完成之后，形成了世界上最大的人工湖，纳赛尔水库。而它也导致了无数的文物陷入淹没水下的命运，还好联合国教科文组织拯救了一批古迹，否则今天只能靠想象了。</p>
+<h2 id="菲莱神庙"><a href="#菲莱神庙" class="headerlink" title="菲莱神庙"></a>菲莱神庙</h2><p><img src="http://image.xiaoy.name/IMG_7418.JPG" width="100%" height="100%"></p>
+<p>门票100埃镑，可能是天气原因并没有多少游人，渡船都在等待客人。</p>
+<p><img src="http://image.xiaoy.name/0X9A6797.jpg" width="100%" height="100%"></p>
+<p>菲莱神庙名字来源于菲莱岛，我觉得称为伊西丝神庙更为恰当，它也是被迁移到高处的神庙之一，而此前因为旧水坝的原因，它每年也会被浸泡六个月。</p>
+<p><img src="http://image.xiaoy.name/0X9A6802.jpg" width="100%" height="100%"></p>
+<p><img src="http://image.xiaoy.name/0X9A6804.jpg" width="100%" height="100%"></p>
+<p><img src="http://image.xiaoy.name/0X9A6869.jpg" width="100%" height="100%"></p>
+<p>从船上看到的菲莱神庙。</p>
+<p><img src="http://image.xiaoy.name/0X9A6868.jpg" width="100%" height="100%"></p>
+<p>下船后</p>
+<p><img src="http://image.xiaoy.name/0X9A6862.jpg" width="100%" height="100%"></p>
+<p>神庙的外院里的柱廊还是很完整的，而且它并非是对称的，强迫症患者有点难受，而远远地簇拥着的是它的第一塔门。</p>
+<p><img src="http://image.xiaoy.name/0X9A6859.jpg" width="100%" height="100%"></p>
+<p><img src="http://image.xiaoy.name/0X9A6843.jpg?imageMogr2/auto-orient" width="100%" height="100%"></p>
+<p><img src="http://image.xiaoy.name/0X9A6867.jpg" width="100%" height="100%"></p>
+<p>古老的柱廊配上了现代化的灯光，感觉不伦不类的，这边的柱廊非常完整，连窗户都还在。</p>
+<p><img src="http://image.xiaoy.name/0X9A6857.jpg" width="100%" height="100%"></p>
+<p>宏伟的第一塔门，18米高，雕刻的应该是伊西丝与其子荷鲁斯。</p>
+<p><img src="http://image.xiaoy.name/0X9A6835.jpg?imageMogr2/auto-orient" width="100%" height="100%"></p>
+<p>第二塔门上的雕刻已经被早期的基督徒所破坏，也是挺奇怪的破坏方式了就是了，很难想象他们是花费多大的功夫来破坏。。。</p>
+<p><img src="http://image.xiaoy.name/0X9A6836.jpg?imageMogr2/auto-orient" width="100%" height="100%"></p>
+<p>中央庭院的柱子与前院的并无太大的不同，整体而言会更完好一些。</p>
+<p><img src="http://image.xiaoy.name/0X9A6819.jpg?imageMogr2/auto-orient" width="100%" height="100%"></p>
+<p>左右两侧的那个标志就是破坏者所留下的痕迹，对它的印象真的是够差的了。里面的就是伊西丝的内神殿了。</p>
+<p><img src="http://image.xiaoy.name/0X9A6849.jpg?imageMogr2/auto-orient" width="100%" height="100%"></p>
+<p>动感光波图。。。文字就如同攻击一般。。。也是在这边第一次知道原来文字朝向哪一边就代表向谁说的话。。。果然书上知识还是太少。。。</p>
+<p><img src="http://image.xiaoy.name/0X9A6848.jpg?imageMogr2/auto-orient" width="100%" height="100%"></p>
+<p>又看到了一张很有名的雕刻，这张图在纸莎草中还是很常见的。</p>
+<p><img src="http://image.xiaoy.name/0X9A6824.jpg?imageMogr2/auto-orient" width="100%" height="100%"></p>
+<p>伊西丝拿着生命之匙进行赐福。</p>
+<p><img src="http://image.xiaoy.name/0X9A6853.jpg" width="100%" height="100%"></p>
+<p>砂岩的质地在灯光的照射下真的是非常的有质感。</p>
+<p><img src="http://image.xiaoy.name/0X9A6826.jpg" width="100%" height="100%"></p>
+<p><img src="http://image.xiaoy.name/0X9A6832.jpg" width="100%" height="100%"></p>
+<p>在河边时看到的那个图拉真亭，对比下人就可以发现其实还是挺庞大的，虽然不是正规神庙的一部分，但是估计是艺术家们最喜欢的一个部分，确实是很优雅。</p>
+<h2 id="尼罗河"><a href="#尼罗河" class="headerlink" title="尼罗河"></a>尼罗河</h2><p>逛完菲莱，到渡轮的停靠点旁边买了两大瓶水，因为埃及的游轮上的水烧了也不能喝。所以接下来的行程就是顺着尼罗河漂了~作为世界上第一长河流的尼罗河，我们将通过它从阿斯旺漂到卢克索，行程大概在230公里左右。</p>
+<p><img src="http://image.xiaoy.name/0X9A6881.jpg" width="100%" height="100%"></p>
+<p><img src="http://image.xiaoy.name/0X9A6883.jpg?imageMogr2/auto-orient" width="100%" height="100%"></p>
+<p>在游轮的甲板上纳凉，可以看到一直希望坐的三角风帆，下午时分租个风帆在埃及最适合泛舟的河道慢悠悠的泛舟，应该是个非常舒服的体验，可惜我们到的时间有点晚了，只能遗憾地错过它了。</p>
+<p><img src="http://image.xiaoy.name/0X9A6890.jpg?imageMogr2/auto-orient" width="100%" height="100%"></p>
+<p>总觉得这样子很危险~ 但是感觉应该是一种很好玩的体验。</p>
+<p>默默地展望了下，这下子在世界第一大河和第三大河都坐过几天的游轮后，是不是可以考虑去下第二大河流亚马逊河了。</p>
+<p>以上文字仅为写下时的认知，可能有所遗漏错误，望包涵。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/架构/">架构</a>
+  <span></span> <a href="/tags/埃及/">埃及</a>
   </div>
 
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/架构/">架构</a>
+  <a class="article-category-link" href="/categories/旅游/">旅游</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="http://www.xiaoy.name/2015/08/12/wei-fu-wu-1/" data-title="微服务实践-1 | Xy-Home" data-tsina="1188724621" class="share clearfix">
+  <div data-url="http://www.xiaoy.name/2018/05/26/egypt-4/" data-title="埃及游{4} | Xy-Home" data-tsina="1188724621" class="share clearfix">
   </div>
 
 </div>
@@ -149,19 +176,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2015/08/18/wei-fu-wu-2/" title="微服务实践-2">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  微服务实践-2</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2015/08/09/what-is-xy-watchdog/"  title="what-is-xy-watchdog">
+<a href="/2018/05/21/egypt-3/"  title="埃及游{3}">
  <strong>NEXT:</strong><br/> 
- <span>what-is-xy-watchdog
+ <span>埃及游{3}
 </span>
 </a>
 </div>
@@ -178,7 +197,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#序"><span class="toc-number">1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#壹"><span class="toc-number">2.</span> <span class="toc-text">壹</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#环境"><span class="toc-number">2.1.</span> <span class="toc-text">环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#契机"><span class="toc-number">2.2.</span> <span class="toc-text">契机</span></a></li></ol></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#上午"><span class="toc-number">1.</span> <span class="toc-text">上午</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#阿斯旺"><span class="toc-number">2.</span> <span class="toc-text">阿斯旺</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#菲莱神庙"><span class="toc-number">3.</span> <span class="toc-text">菲莱神庙</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#尼罗河"><span class="toc-number">4.</span> <span class="toc-text">尼罗河</span></a></li></ol>
   </div>
 
 <div id="asidepart">
