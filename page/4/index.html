@@ -68,167 +68,22 @@
 
   <section class="post" itemscope itemprop="blogPost">
   
-    <a href="/2015/10/21/jvm/" title="【笔记】jvm相关一" itemprop="url">
+    <a href="/2015/04/10/移动互联网相关性能-1/" title="移动互联网相关性能(1)" itemprop="url">
   
-    <h1 itemprop="name">【笔记】jvm相关一</h1>
+    <h1 itemprop="name">移动互联网相关性能(1)</h1>
     
      
-           <p itemprop="description" >序发现技术类型的东西，除了一些基础的理论，否则的话一段时间不使用很容易就会忘记掉部分东西，因此~好记性不如做笔记…..还是记下来的好。
-垃圾收集可作为GC-ROOT的对象
-栈中引用的对象
-类静态属性引用的对象【方法区】
-常量引用的对象【方法区】
-JNI引用的对象
-
-四种引用
-强引</p>
+           <p itemprop="description" >序APP的访问速度一直都是大家非常关注的一个点，而近期因为某些原因投入比较多的精力在这上面，所以记录下相关心得。
+一笔带过的前期优化刚接需要优化的项目时，APP平时不算非常卡，但是一旦遇到高峰期就卡得无法访问。我们通过修改整体架构，切割并分布各系统，让APP恢复到正常速度的水平。</p>
         
     
-    <time datetime="2015-10-20T16:13:42.000Z" itemprop="datePublished">2015-10-21</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2015/10/20/20151020/" title="两个月的流逝" itemprop="url">
-  
-    <h1 itemprop="name">两个月的流逝</h1>
-    
-     
-           <p itemprop="description" >壹整整两个月时间，被各种事务给堆满了。
-之前一直对管理敬而远之，结果这次却因为需要做某些尝试而不得不组了个新的小组，却又招不到好的leader，结果就是只能自己兼着管理；说起管理，之所以这么怕完全是因为以前两家公司的经历，做到管理后每天大部分时间都是事务性工作与各种会与各种妥协的</p>
-        
-    
-    <time datetime="2015-10-20T15:10:37.000Z" itemprop="datePublished">2015-10-20</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2015/08/18/wei-fu-wu-3/" title="微服务实践-3" itemprop="url">
-  
-    <h1 itemprop="name">微服务实践-3</h1>
-    
-     
-           <p itemprop="description" >肆存在的问题开发人员按照微服务划分之后的系统，会碰到一些之前所不会碰到的问题，其中一块就是以往的一块业务逻辑，可能只需要在同一个系统里进行函数调用，现在却需要跨越几个系统，即使框架已经封装了分布式调用，但是依然会碰到开发人员安排上的问题。
-例如如今有一个功能，需要进行一些业务上的</p>
-        
-    
-    <time datetime="2015-08-18T14:47:46.000Z" itemprop="datePublished">2015-08-18</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2015/08/18/wei-fu-wu-2/" title="微服务实践-2" itemprop="url">
-  
-    <h1 itemprop="name">微服务实践-2</h1>
-    
-     
-           <p itemprop="description" >贰预研自从争取到了开发时间，马上就进入旧系统的整理阶段，一个个功能整理出来后，各种互相关联的缠绕着的关系让我一度感觉世界是如此阴暗，因为就如同重构一般，你已经很难知道系统的原始需求了，你能看到的只是如今表现出来的形式。
-在消耗了几天的时间后，总算从最底层的商品开始将整个系统的大体</p>
-        
-    
-    <time datetime="2015-08-18T14:36:40.000Z" itemprop="datePublished">2015-08-18</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2015/08/12/wei-fu-wu-1/" title="微服务实践-1" itemprop="url">
-  
-    <h1 itemprop="name">微服务实践-1</h1>
-    
-     
-           <p itemprop="description" >序距离业务系统逐步替换为微服务已经接近9个月了，中间也是不断地碰到各种坑，不过也获得了各种实践经验，当然不仅仅是微服务相关的，包含了整个架构及人员的方方面面。
-趁着近期放松心情，把一些东西记录下~仅当做怀念（因为在测试docker上碰到各种纠结的事情，万分无力，趁着月底去参加CU</p>
-        
-    
-    <time datetime="2015-08-12T13:59:20.000Z" itemprop="datePublished">2015-08-12</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2015/08/09/what-is-xy-watchdog/" title="what-is-xy-watchdog" itemprop="url">
-  
-    <h1 itemprop="name">what-is-xy-watchdog</h1>
-    
-     
-           <p itemprop="description" >场景在很多场景下，我们需要秒级地执行一些任务，例如每秒检查一些功能是否有新的需要处理的数据.
-在一些语言中我们可能采用一些阻塞的方式，例如BRPOP redis队列来实现，但是在PHP中，常见的作法是在cli脚本中进行sleep 1的操作或者在shell脚本中sleep 1后继续</p>
-        
-    
-    <time datetime="2015-08-09T13:21:17.000Z" itemprop="datePublished">2015-08-09</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2015/06/10/招聘那点事儿/" title="招聘那点事儿" itemprop="url">
-  
-    <h1 itemprop="name">招聘那点事儿</h1>
-    
-     
-           <p itemprop="description" >侃侃近期跳槽风愈演愈烈，又一个小学妹问简历如何如何，总结下以便下次可以直接复制粘贴给问的人~
-其实谈到这块，就又有一个新的话题，那就是招人的公司，到底需要啥人。
-
-以下仅针对IT技术这块的简历：
-华丽的各种格式呀、样式呀、颜色呀唉，一天看N份简历的情况下，能不能不要让我花眼，根本</p>
-        
-    
-    <time datetime="2015-06-10T07:38:01.000Z" itemprop="datePublished">2015-06-10</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2015/06/05/20150605/" title="沉寂了几个月" itemprop="url">
-  
-    <h1 itemprop="name">沉寂了几个月</h1>
-    
-     
-           <p itemprop="description" >絮絮叨叨封闭了三个月，花了半个月讨论了需求，花了一个月做出了第一款产品，然后发现方向错误，丢弃，又经过半个月讨论，又花了一个月做出了第二款产品，然后发布android版上线，接下来一个月ios及web版上线。
-几个月下来，荒废了锻炼，胖了10斤；与朋友们的联系少了些许；但是最可怕</p>
-        
-    
-    <time datetime="2015-06-05T07:04:01.000Z" itemprop="datePublished">2015-06-05</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2015/04/13/移动互联网相关性能-3/" title="移动互联网相关性能(3)" itemprop="url">
-  
-    <h1 itemprop="name">移动互联网相关性能(3)</h1>
-    
-     
-           <p itemprop="description" >补充我们已经了解了相关RRC所带来的消耗，剩下的消耗就是正常网络传输消耗了，不过其实移动端还有个比较特殊的地方，那就是核心网络通过RRC我们已经可以连接到运营商的核心网络，但是，移动端的覆盖特征决定了你的信号会在不同基站间变化，对于这块我觉得应该了解下相关结构
-核心网络核心网络在</p>
-        
-    
-    <time datetime="2015-04-13T12:44:05.000Z" itemprop="datePublished">2015-04-13</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2015/04/11/移动互联网相关性能-2/" title="移动互联网相关性能(2)" itemprop="url">
-  
-    <h1 itemprop="name">移动互联网相关性能(2)</h1>
-    
-     
-           <p itemprop="description" >用户的环境2G如今很多照片或者视频较多的应用，可以说都已经抛弃了2G，其实也不能说抛弃，应该说速度已经慢得大家都不想去维护体验了但是，2G用户还真的是挺多的，所以我们需要知道下相关原因，再来看优化
-简介国内的运营商采用的2G标准大致为GSM与CDMA两种，有兴趣的童鞋可以瞧下3G</p>
-        
-    
-    <time datetime="2015-04-11T01:04:01.000Z" itemprop="datePublished">2015-04-11</time>
+    <time datetime="2015-04-10T11:04:01.000Z" itemprop="datePublished">2015-04-10</time>
   </a>
 </section>
 
 
   <nav id="page-nav" class="clearfix">
-    <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span>
   </nav>
 
 </div>
